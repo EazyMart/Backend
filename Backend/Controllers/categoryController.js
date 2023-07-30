@@ -1,5 +1,6 @@
 const slugify = require("slugify"); // this package to convert A and B => a-and-b
 const categoryModel = require("../Models/categoryModel")
+const APIError = require("../Helper/APIError");
 const CreateResponse = require("../ResponseObject/responseObject")
 const asyncHandler = require('express-async-handler')
 const pagination = require("../Helper/pagination")
@@ -17,10 +18,11 @@ exports.getAllCategories = asyncHandler(async (request, response) => {
 // @desc    Create Category by ID
 // @route   GET /Category/:id
 // @access  Public
-exports.getCategoryById = asyncHandler(async (request, response) => {
+exports.getCategoryById = asyncHandler(async (request, response, next) => {
     const category = await categoryModel.findById(request.params.id, {__v: false})
     if(!category) {
-        response.status(404).json(CreateResponse(false, 'This category is not found'));
+        next(new APIError('This category is not found', 404));
+        return;
     }
     response.status(200).json(CreateResponse(true, 'The data of this category is retrieved successfully', [category]));
 })
@@ -36,7 +38,7 @@ exports.addCategory = asyncHandler(async (request, response) => {
 // @desc    Update Category
 // @route   PATCH /Category/:id
 // @access  Private
-exports.updateCategory = asyncHandler(async (request, response) => {
+exports.updateCategory = asyncHandler(async (request, response, next) => {
     const properties = ["name", "image", "available", "deleted"];
     const targetFields = updatedFields(request, properties);
     if(targetFields.name) {
@@ -44,7 +46,8 @@ exports.updateCategory = asyncHandler(async (request, response) => {
     }
     const updatedCategory = await categoryModel.findOneAndUpdate({_id: request.params.id}, targetFields, {new: true})
     if(!updatedCategory) {
-        response.status(404).json(CreateResponse(false, 'This category is not found'));
+        next(new APIError('This category is not found', 404));
+        return;
     }
     response.status(200).json(CreateResponse(true, 'This category is updated successfully', [updatedCategory]));
 })
@@ -52,10 +55,11 @@ exports.updateCategory = asyncHandler(async (request, response) => {
 // @desc    Delete Category
 // @route   DELETE /Category/:id
 // @access  Private
-exports.deleteCategory = asyncHandler(async (request, response) => {
+exports.deleteCategory = asyncHandler(async (request, response, next) => {
     const deletedCategory = await categoryModel.findOneAndUpdate({_id: request.params.id}, {deleted: true, available: false})
     if(!deletedCategory) {
-        response.status(404).json(CreateResponse(false, 'This category is not found'));
+        next(new APIError('This category is not found', 404));
+        return;
     }
     response.status(204).json();
 })

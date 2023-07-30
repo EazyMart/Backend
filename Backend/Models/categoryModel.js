@@ -16,13 +16,13 @@ const categorySchema = mongoose.Schema(
             minlength: [3, 'Too short category name'],
             maxlength: [32, 'Too long category name']
         },
-        image: {
-            type: String,
-            default: "https://placehold.co/600x400.png"
-        },
         slug: { // A and B => a-and-b
             type: String,
             lowercase: true        
+        },
+        image: {
+            type: String,
+            default: "https://placehold.co/600x400.png"
         },
         available: {
             type: Boolean,

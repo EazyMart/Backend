@@ -1,16 +1,17 @@
 const express = require("express");
 const router = express.Router();
 const {getAllCategories, getCategoryById, addCategory, updateCategory, deleteCategory} = require("../Controllers/categoryController");
-// const validator = require("../Middlewares/errorValidator");
-// const authenticatioMW = require("../Middlewares/authentication");
+const {idValidation} = require("../Middlewares/Validations/idValidation")
+const {addCategoryValidation, updateCategoryValidation} = require("../Middlewares/Validations/categoryValidation")
 
 router.route("/category")
     .get(getAllCategories)
-    .post(addCategory)
+    .post(addCategoryValidation, addCategory)
 
 router.route("/category/:id")
+    .all(idValidation)
     .get(getCategoryById)
-    .post(updateCategory)
+    .patch(updateCategoryValidation, updateCategory)
     .delete(deleteCategory)
 
 
