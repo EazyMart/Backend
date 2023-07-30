@@ -1,13 +1,14 @@
+const fs = require('fs');
 const express = require("express");
 const morgan = require("morgan");
 const dotenv = require("dotenv").config({path: "config.env"});
+const cors = require("cors");
 const APIError = require("./Helper/APIError");
 const globalError = require("./Middlewares/errorMiddleware")
-const fs = require('fs');
-const cors = require("cors");
 const dbConnection = require("./Config/database")
 const categoryRoute = require("./Routes/categoryRoute");
-const { Server } = require("http");
+const subCategoryRoute = require("./Routes/subCategoryRoute");
+const brandRoute = require("./Routes/brandRoute");
 
 //Start The App
 const app = express();
@@ -17,7 +18,7 @@ let server = app.listen();
 
 //Connection on Atlas Mongodb
 dbConnection().then(() => {
-    server = app.listen(port, async function() {
+    server = app.listen(port, async () => {
         console.log(`App is running at: http://localhost:${port}/`);
     })    
 })
@@ -25,7 +26,7 @@ dbConnection().then(() => {
 //Middlewares
 app.use(cors()) //allow cors for external clients
 app.use(express.json()); //parse body into json
-if(process.env.NODE_ENV == "development") //log all requests into external file 
+if(process.env.NODE_ENV === "development") //log all requests into external file 
 {
     app.use(
         morgan("tiny", {
@@ -37,7 +38,9 @@ if(process.env.NODE_ENV == "development") //log all requests into external file
 }
 
 //Routes
-app.use(categoryRoute)
+app.use('/category', categoryRoute);
+app.use('/subcategory', subCategoryRoute);
+app.use('/brand', brandRoute);
 
 
 //Notfound Middleware

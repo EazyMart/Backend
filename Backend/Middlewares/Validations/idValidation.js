@@ -1,5 +1,5 @@
 const {check} = require("express-validator");
-const errorValidator = require("../errorValidator")
+const errorValidator = require("../errorValidator");
 
 exports.idValidation = [
 	check('id')

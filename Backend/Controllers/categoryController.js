@@ -1,17 +1,17 @@
 const slugify = require("slugify"); // this package to convert A and B => a-and-b
+const asyncHandler = require('express-async-handler');
 const categoryModel = require("../Models/categoryModel")
 const APIError = require("../Helper/APIError");
-const CreateResponse = require("../ResponseObject/responseObject")
-const asyncHandler = require('express-async-handler')
-const pagination = require("../Helper/pagination")
-const updatedFields = require("../Helper/updatedFields")
+const CreateResponse = require("../ResponseObject/responseObject");
+const pagination = require("../Helper/pagination");
+const updatedFields = require("../Helper/updatedFields");
 
 // @desc    Create All Categories
 // @route   GET /Category
 // @access  Public
 exports.getAllCategories = asyncHandler(async (request, response) => {
     const {page, limit, skip, totalPages} = await pagination(request, await categoryModel.countDocuments({}));
-    AllCategories = await categoryModel.find({}, {__v: false}).skip(skip).limit(limit);
+    const AllCategories = await categoryModel.find({}, {__v: false}).skip(skip).limit(limit);
     response.status(200).json(CreateResponse(true, 'All Categories are retrieved successfully', AllCategories, page, limit, totalPages));
 })
 

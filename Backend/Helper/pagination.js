@@ -1,4 +1,4 @@
-let pagination = async function(request, documentCount) {
+const pagination = async function(request, documentCount) {
     const {page = 1, limit = 3} = request.query;
     return {
         page: +page,
