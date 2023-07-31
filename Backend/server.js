@@ -9,6 +9,7 @@ const dbConnection = require("./Config/database")
 const categoryRoute = require("./Routes/categoryRoute");
 const subCategoryRoute = require("./Routes/subCategoryRoute");
 const brandRoute = require("./Routes/brandRoute");
+const productRoute = require("./Routes/productRoute");
 
 //Start The App
 const app = express();
@@ -41,6 +42,7 @@ if(process.env.NODE_ENV === "development") //log all requests into external file
 app.use('/category', categoryRoute);
 app.use('/subcategory', subCategoryRoute);
 app.use('/brand', brandRoute);
+app.use('/product', productRoute);
 
 
 //Notfound Middleware

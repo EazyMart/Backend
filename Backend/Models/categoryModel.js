@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
-const slugify = require("slugify"); // this package to convert A and B => a-and-b
-const AutoIncrement = require('@alec016/mongoose-autoincrement');
-
-AutoIncrement.initialize(mongoose.connection)
+// const slugify = require("slugify"); // this package to convert A and B => a-and-b
+const AutoIncrement = require('../Config/autoIncrementInitialization')
 
 const categorySchema = mongoose.Schema(
     {
@@ -12,6 +10,7 @@ const categorySchema = mongoose.Schema(
         name: {
             type: String,
             lowercase: true,
+            trim: true,
             required: [true, 'Catgory name is required'],
             unique: [true, 'This category is already found'],
             minlength: [3, 'Too short category name, must be 3 characters at least'],

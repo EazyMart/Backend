@@ -1,6 +1,6 @@
 const slugify = require("slugify"); // this package to convert A and B => a-and-b
 const asyncHandler = require('express-async-handler');
-const subCategoryModel = require("../Models/subCategory")
+const subCategoryModel = require("../Models/subCategoryModel")
 const APIError = require("../Helper/APIError");
 const CreateResponse = require("../ResponseObject/responseObject");
 const pagination = require("../Helper/pagination");

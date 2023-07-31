@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
-const AutoIncrement = require('@alec016/mongoose-autoincrement');
-
-AutoIncrement.initialize(mongoose.connection)
+const AutoIncrement = require('../Config/autoIncrementInitialization')
 
 const brandSchema = mongoose.Schema(
     {
@@ -11,6 +9,7 @@ const brandSchema = mongoose.Schema(
         name: {
             type: String,
             lowercase: true,
+            trim: true,
             required: [true, 'Brand name is required'],
             unique: [true, 'This brand is already found'],
             minlength: [3, 'Too short brand name, must be 3 characters at least'],

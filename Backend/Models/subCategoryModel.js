@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
-const AutoIncrement = require('@alec016/mongoose-autoincrement');
-
-AutoIncrement.initialize(mongoose.connection)
+const AutoIncrement = require('../Config/autoIncrementInitialization')
 
 const subCategorySchema = mongoose.Schema(
     {
@@ -11,6 +9,7 @@ const subCategorySchema = mongoose.Schema(
         name: {
             type: String,
             lowercase: true,
+            trim: true,
             required: [true, 'SubCatgory name is required'],
             unique: [true, 'This subcategory is already found'],
             minlength: [2, 'Too short subcategory name, must be at least 2 characters'],
