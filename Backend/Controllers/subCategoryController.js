@@ -3,8 +3,8 @@ const asyncHandler = require('express-async-handler');
 const subCategoryModel = require("../Models/subCategoryModel")
 const APIError = require("../Helper/APIError");
 const CreateResponse = require("../ResponseObject/responseObject");
-const pagination = require("../Helper/pagination");
-const updatedFields = require("../Helper/updatedFields");
+const updatedFields = require("../Shared/updatedFields");
+const {filter, select, sort, pagination} = require("../Shared/queryRequest");
 
 // @desc    Set CategoryId To Request Body
 // @route   No Route 

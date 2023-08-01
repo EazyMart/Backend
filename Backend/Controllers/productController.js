@@ -3,15 +3,16 @@ const asyncHandler = require('express-async-handler');
 const productModel = require("../Models/productModel")
 const APIError = require("../Helper/APIError");
 const CreateResponse = require("../ResponseObject/responseObject");
-const pagination = require("../Helper/pagination");
-const updatedFields = require("../Helper/updatedFields");
+const updatedFields = require("../Shared/updatedFields");
+const {filter, select, sort, pagination} = require("../Shared/queryRequest");
 
 // @desc    Create All Products
 // @route   GET /product
 // @access  Public
 exports.getAllProducts = asyncHandler(async (request, response) => {
-    const {page, limit, skip, totalPages} = await pagination(request, await productModel.countDocuments({}));
-    const AllProducts = await productModel.find({}, {__v: false}).skip(skip).limit(limit);
+    const filtedFields = filter(request, 'title', 'description');
+    const {page, limit, skip, totalPages} = await pagination(request, await productModel.countDocuments(filtedFields));
+    const AllProducts = await productModel.find(filtedFields, select(request)).skip(skip).limit(limit).sort(sort(request));
     response.status(200).json(CreateResponse(true, 'All Products are retrieved successfully', AllProducts, page, limit, totalPages));
 })
 
@@ -19,7 +20,7 @@ exports.getAllProducts = asyncHandler(async (request, response) => {
 // @route   GET /Product/:id
 // @access  Public
 exports.getProductById = asyncHandler(async (request, response, next) => {
-    const product = await productModel.findById(request.params.id, {__v: false})
+    const product = await productModel.findById(request.params.id, select(request))
     if(!product) {
         next(new APIError('This Product is not found', 404));
         return;

@@ -3,8 +3,8 @@ const asyncHandler = require('express-async-handler');
 const brandModel = require("../Models/brandModel")
 const APIError = require("../Helper/APIError");
 const CreateResponse = require("../ResponseObject/responseObject");
-const pagination = require("../Helper/pagination");
-const updatedFields = require("../Helper/updatedFields");
+const updatedFields = require("../Shared/updatedFields");
+const {filter, select, sort, pagination} = require("../Shared/queryRequest");
 
 // @desc    Create All Brands
 // @route   GET /brand

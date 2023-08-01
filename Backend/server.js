@@ -11,6 +11,7 @@ const subCategoryRoute = require("./Routes/subCategoryRoute");
 const brandRoute = require("./Routes/brandRoute");
 const productRoute = require("./Routes/productRoute");
 
+
 //Start The App
 const app = express();
 
@@ -21,7 +22,7 @@ let server = app.listen();
 dbConnection().then(() => {
     server = app.listen(port, async () => {
         console.log(`App is running at: http://localhost:${port}/`);
-    })    
+    })
 })
 
 //Middlewares
