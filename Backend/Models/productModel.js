@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const slugify = require("slugify");
 const AutoIncrement = require('../Config/autoIncrementInitialization')
 
 const productSchema = mongoose.Schema(
@@ -8,15 +9,14 @@ const productSchema = mongoose.Schema(
         },
         title: {
             type: String,
-            lowercase: true,
             trim: true,
             required: [true, 'Product title is required'],
-            unique: [true, 'This product is already found'],
             minlength: [3, 'Too short product title, must be 3 characters at least'],
             maxlength: [50, 'Too long product title, must be 50 characters at most'],
         },
         slug: {
             type: String,
+            unique: [true, 'This product is already found'],
             lowercase: true        
         },
         description: {
@@ -92,6 +92,20 @@ const productSchema = mongoose.Schema(
 )
 
 productSchema.plugin(AutoIncrement.plugin, {model: 'products', startAt: 1,});
+
+//Set value to slug property before adding new category to the database
+productSchema.pre('save', function(next) {
+    this.slug = slugify(this.title);
+    next();
+});
+
+//update value of slug property when the title is updated
+productSchema.pre('findOneAndUpdate', function(next) {
+    if(this._update.title) {
+        this._update.slug = slugify(this._update.title);
+    }
+    next();
+});  
 
 const productModule = mongoose.model("products", productSchema);
 

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-// const slugify = require("slugify"); // this package to convert A and B => a-and-b
+const slugify = require("slugify"); // this package to convert A and B => a-and-b
 const AutoIncrement = require('../Config/autoIncrementInitialization')
 
 const categorySchema = mongoose.Schema(
@@ -9,15 +9,14 @@ const categorySchema = mongoose.Schema(
         },
         name: {
             type: String,
-            lowercase: true,
             trim: true,
             required: [true, 'Catgory name is required'],
-            unique: [true, 'This category is already found'],
             minlength: [3, 'Too short category name, must be 3 characters at least'],
             maxlength: [32, 'Too long category name, must be 32 characters at most'],
         },
         slug: { // A and B => a-and-b
             type: String,
+            unique: [true, 'This catgory is already found'],
             lowercase: true        
         },
         image: {
@@ -40,21 +39,19 @@ const categorySchema = mongoose.Schema(
 
 categorySchema.plugin(AutoIncrement.plugin, {model: 'categories', startAt: 1,});
 
-// categorySchema.pre('save', function (next) {
-//     if (this.isModified('name') || !this.slug) {
-//         this.slug = slugify(this.name);
-//     }
-//     next();
-// });
+//Set value to slug property before adding new category to the database
+categorySchema.pre('save', function(next) {
+    this.slug = slugify(this.name);
+    next();
+});
 
-// categorySchema.pre('findOneAndUpdate', function (next) {
-//     const { name } = this.getUpdate();
-//     if (name) {
-//         const slug = slugify(name);
-//         this.findOneAndUpdate({}, { $set: { slug } });
-//     }
-//     next();
-// });  
+//update value of slug property when the name is updated
+categorySchema.pre('findOneAndUpdate', function(next) {
+    if(this._update.name) {
+        this._update.slug = slugify(this._update.name);
+    }
+    next();
+});  
 
 const categoryModule = mongoose.model("categories", categorySchema);
 

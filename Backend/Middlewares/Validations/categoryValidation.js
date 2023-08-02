@@ -7,6 +7,7 @@ exports.addCategoryValidation = [
 		.isString().withMessage("Category Name must be string")
 		.isLength({min: 3}).withMessage("Too short category name, 3 characters at least")
 		.isLength({max: 32}).withMessage("Too long category name, 32 characters at most"),
+
     errorValidator
 ]
 

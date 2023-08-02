@@ -7,6 +7,7 @@ exports.addBrandValidation = [
 		.isString().withMessage("Brand Name must be string")
 		.isLength({min: 3}).withMessage("Too short Brand name, 3 characters at least")
 		.isLength({max: 32}).withMessage("Too long Brand name, 32 characters at most"),
+		
     errorValidator
 ]
 

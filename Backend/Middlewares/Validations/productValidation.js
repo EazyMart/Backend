@@ -10,7 +10,7 @@ exports.addProductValidation = [
 		.isString().withMessage("Product title must be string")
 		.isLength({min: 3}).withMessage("Too short product title, 3 characters at least")
 		.isLength({max: 50}).withMessage("Too long product title, 50 characters at most"),
-    
+
 	check("description")
 		.notEmpty().withMessage("Product must have a description")
 		.isString().withMessage("Product description must be string")
@@ -235,6 +235,7 @@ exports.updateProductValidation = [
             }
 			throw new Error(`This category doesn't exist: ${result.notFoundCategories}`);
 		}),
+		
 	check("subCategories")
 		.optional()
 		.isArray({min: 1}).withMessage("Any product must belong to one subcategory at least")
@@ -253,9 +254,7 @@ exports.updateProductValidation = [
 			throw new Error(`${result.notFoundSubCategories.length > 1 ? "These subcategories don't exist" : "This subcategory doesn't exist"}: ${result.notFoundSubCategories}`);
 		})
 		.custom(async (value, {req}) => {
-			if(!req.body.category) {
-				await addCategoryIdToRequestBody(req);
-			}
+			await addCategoryIdToRequestBody(req);
 			if(req.categoryId.length > 1) {
 				throw new Error(`${req.body.subCategories.length > 1 ? "These subcategories don't" : "This subcategory doesn't"} belong to the same category`);
             }

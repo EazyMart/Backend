@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const slugify = require("slugify");
 const AutoIncrement = require('../Config/autoIncrementInitialization')
 
 const subCategorySchema = mongoose.Schema(
@@ -8,15 +9,14 @@ const subCategorySchema = mongoose.Schema(
         },
         name: {
             type: String,
-            lowercase: true,
             trim: true,
             required: [true, 'SubCatgory name is required'],
-            unique: [true, 'This subcategory is already found'],
             minlength: [2, 'Too short subcategory name, must be at least 2 characters'],
             maxlength: [32, 'Too long subcategory name, must be at least 32 characters'],
         },
         slug: { // A and B => a-and-b
             type: String,
+            unique: [true, 'This subcatgory is already found'],
             lowercase: true        
         },
         image: {
@@ -43,6 +43,20 @@ const subCategorySchema = mongoose.Schema(
 )
 
 subCategorySchema.plugin(AutoIncrement.plugin, {model: 'subCategories', startAt: 1,});
+
+//Set value to slug property before adding new category to the database
+subCategorySchema.pre('save', function(next) {
+    this.slug = slugify(this.name);
+    next();
+});
+
+//update value of slug property when the name is updated
+subCategorySchema.pre('findOneAndUpdate', function (next) {
+    if(this._update.name) {
+        this._update.slug = slugify(this._update.name);
+    }
+    next();
+}); 
 
 const subCategoryModule = mongoose.model("subCategories", subCategorySchema);
 
