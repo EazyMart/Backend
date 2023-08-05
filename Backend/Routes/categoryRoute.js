@@ -5,18 +5,21 @@ const {getAllCategories, getCategoryById, addCategory, updateCategory, deleteCat
 const {idValidation} = require("../Middlewares/Validations/idValidation")
 const {addCategoryValidation, updateCategoryValidation} = require("../Middlewares/Validations/categoryValidation")
 const subCategoryRoute = require("./subCategoryRoute");
+const {uploadImageList, toFirebase} = require("../uploadFiles/uploadImage");
 
 //Redirect to subcategory route
 router.use("/:categoryId/subcategory", subCategoryRoute);
 
+const uploadFiles = [{name: "image", maxCount: 1}];
+
 router.route("/")
     .get(getAllCategories)
-    .post(addCategoryValidation, addCategory)
+    .post(uploadImageList(uploadFiles), toFirebase(uploadFiles, "category", "categories"), addCategoryValidation, addCategory)
 
 router.route("/:id")
     .all(idValidation)
     .get(getCategoryById)
-    .patch(updateCategoryValidation, updateCategory)
+    .patch(uploadImageList(uploadFiles), toFirebase(uploadFiles, "category", "categories"), updateCategoryValidation, updateCategory)
     .delete(deleteCategory)
 
 

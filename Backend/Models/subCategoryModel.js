@@ -58,6 +58,15 @@ subCategorySchema.pre('findOneAndUpdate', function (next) {
     next();
 }); 
 
+//To populate with each find query
+subCategorySchema.pre(/^find/, function (next) {
+    this.populate({
+        path: 'category',
+        select: 'name'
+    })
+    next();
+})
+
 const subCategoryModule = mongoose.model("subCategories", subCategorySchema);
 
 module.exports = subCategoryModule;

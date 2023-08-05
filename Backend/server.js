@@ -39,6 +39,9 @@ if(process.env.NODE_ENV === "development") //log all requests into external file
     )
 }
 
+//All outer clinics to access static files
+app.use("/uploads/images", express.static("uploads/images"));
+
 //Routes
 app.use('/category', categoryRoute);
 app.use('/subcategory', subCategoryRoute);

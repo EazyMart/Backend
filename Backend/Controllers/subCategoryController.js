@@ -14,7 +14,7 @@ exports.setCategoryIdToRequestBody = (request, response, next) => {
 // @desc    Create All SubCategories for specific category
 // @route   GET /subcategory
 // @access  Public
-const searchFields = [];
+const searchFields = ['name'];
 exports.getAllSubCategories = getAllDocuments(subCategoryModel, 'Subcategories', ...searchFields);
 
 // @desc    Create Category by ID

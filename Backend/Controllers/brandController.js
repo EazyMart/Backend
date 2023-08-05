@@ -4,7 +4,7 @@ const {getAllDocuments, getDocumentById, addDocument, updateDocument, deleteDocu
 // @desc    Create All Brands
 // @route   GET /brand
 // @access  Public
-const searchFields = [];
+const searchFields = ['name'];
 exports.getAllBrands = getAllDocuments(brandModel, 'Brands', ...searchFields);
 
 // @desc    Create Brand by ID

@@ -2,7 +2,7 @@ const {check} = require("express-validator");
 const errorValidator = require("../errorValidator");
 const checkCategoryExistence = require("../../Shared/checkCategoryExistence");
 const checkSubCategoryExistence = require("../../Shared/checkSubcategoryExistence");
-const addCategoryIdToRequestBody = require("../../Shared/addCategoryIdToRequestBody");
+const {addCategoryIdToRequestBody, addSubCategoriesToRequestBody} = require("../../Shared/addToRequestBody");
 
 exports.addProductValidation = [
 	check("title")
@@ -92,7 +92,7 @@ exports.addProductValidation = [
 		.notEmpty().withMessage("Any product must belong to a category")
 		.isInt({min: 1}).withMessage("Category Id must be an integer more than or equal to 1")
 		.custom(async (value) => {
-			const result = await checkCategoryExistence(value);
+			const result = await checkCategoryExistence(+value);
 			if(result.success) {
                 return true;
             }
@@ -103,7 +103,7 @@ exports.addProductValidation = [
 		.isArray({min: 1}).withMessage("Any product must belong to one subcategory at least")
 		.customSanitizer((value) => Array.from(new Set(value)))
 		.custom((value) => {
-			if (!value.every((item) => typeof item === 'number')) {
+			if (!value.every((item) => typeof (+item) === 'number')) {
 				throw new Error('All elements in the subCategories array must be numbers');
 			}
 			return true;
@@ -119,7 +119,7 @@ exports.addProductValidation = [
 			if(req.categoryId.length > 1) {
 				throw new Error(`${req.body.subCategories.length > 1 ? "These subcategories don't" : "This subcategory doesn't"} belong to the same category`);
             }
-			if(req.categoryId[0] !== req.body.category) {
+			if(req.categoryId[0]._id !== +req.body.category) {
 				throw new Error(`${req.body.subCategories.length > 1 ? "These subcategories don't" : "This subcategory doesn't"} belong to the category of Id = ${req.body.category}`);
 			}
 			return true;
@@ -229,11 +229,17 @@ exports.updateProductValidation = [
 		.optional()
 		.isInt({min: 1}).withMessage("Category Id must be an integer more than or equal to 1")
 		.custom(async (value) => {
-			const result = await checkCategoryExistence(value);
+			const result = await checkCategoryExistence(+value);
 			if(result.success) {
                 return true;
             }
 			throw new Error(`This category doesn't exist: ${result.notFoundCategories}`);
+		})
+		.custom(async (value, {req}) => {
+			if(!req.body.subCategories) {
+				await addSubCategoriesToRequestBody(req);
+			}
+			return true;
 		}),
 		
 	check("subCategories")
@@ -241,7 +247,7 @@ exports.updateProductValidation = [
 		.isArray({min: 1}).withMessage("Any product must belong to one subcategory at least")
 		.customSanitizer((value) => Array.from(new Set(value)))
 		.custom((value) => {
-			if (!value.every((item) => typeof item === 'number')) {
+			if (!value.every((item) => typeof (+item) === 'number')) {
 				throw new Error('All elements in the subCategories array must be numbers');
 			}
 			return true;
@@ -251,15 +257,17 @@ exports.updateProductValidation = [
 			if(result.success) {
                 return true;
             }
-			throw new Error(`${result.notFoundSubCategories.length > 1 ? "These subcategories don't exist" : "This subcategory doesn't exist"}: ${result.notFoundSubCategories}`);
+			throw new Error(`${result.notFoundSubCategories.length > 1 ? "The subcategories don't exist" : "The subcategory doesn't exist"}: ${result.notFoundSubCategories}`);
 		})
 		.custom(async (value, {req}) => {
-			await addCategoryIdToRequestBody(req);
+			if(!req.body.category) {
+				await addCategoryIdToRequestBody(req);
+			}
 			if(req.categoryId.length > 1) {
-				throw new Error(`${req.body.subCategories.length > 1 ? "These subcategories don't" : "This subcategory doesn't"} belong to the same category`);
+				throw new Error(`${req.body.subCategories.length > 1 ? "The subcategories don't" : "The subcategory doesn't"} belong to the same category`);
             }
-			if(req.categoryId[0] !== req.body.category) {
-				throw new Error(`${req.body.subCategories.length > 1 ? "These subcategories don't" : "This subcategory doesn't"} belong to the category of Id = ${req.body.category}`);
+			if(req.categoryId[0]._id !== +req.body.category) {
+				throw new Error(`${req.body.subCategories.length > 1 ? "The subcategories don't" : "The subcategory doesn't"} belong to the category of Id = ${req.body.category}`);
 			}
 			return true;
 			

@@ -1,5 +1,6 @@
 const {check} = require("express-validator");
 const errorValidator = require("../errorValidator")
+const checkCategoryExistence = require("../../Shared/checkCategoryExistence");
 
 exports.addSubCategoryValidation = [
 	check("name")
@@ -10,7 +11,14 @@ exports.addSubCategoryValidation = [
 	
 	check("category")
 		.notEmpty().withMessage("SubCatgory must belong to parent category")
-		.isInt().withMessage("Category Id must be an integer"),
+		.isInt({min: 1}).withMessage("Category Id must be an integer more than or equal to 1")
+				.custom(async (value) => {
+			const result = await checkCategoryExistence(value);
+			if(result.success) {
+                return true;
+            }
+			throw new Error(`This category doesn't exist: ${result.notFoundCategories}`);
+		}),
 
     errorValidator
 ]
@@ -24,8 +32,15 @@ exports.updateSubCategoryValidation = [
 
 	check("category")
 		.optional()
-		.isInt().withMessage("Category Id must be an integer"),
-
+		.isInt({min: 1}).withMessage("Category Id must be an integer more than or equal to 1")
+				.custom(async (value) => {
+			const result = await checkCategoryExistence(value);
+			if(result.success) {
+                return true;
+            }
+			throw new Error(`This category doesn't exist: ${result.notFoundCategories}`);
+		}),
+		
 	check("available")
 		.optional()
 		.isBoolean().withMessage("Available must be boolean"),

@@ -4,7 +4,7 @@ const {getAllDocuments, getDocumentById, addDocument, updateDocument, deleteDocu
 // @desc    Create All Categories
 // @route   GET /Category
 // @access  Public
-const searchFields = [];
+const searchFields = ['name'];
 exports.getAllCategories = getAllDocuments(categoryModel, 'Categories', ...searchFields);
 
 // @desc    Create Category by ID

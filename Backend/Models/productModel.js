@@ -107,6 +107,21 @@ productSchema.pre('findOneAndUpdate', function(next) {
     next();
 });  
 
+//To populate with each find query
+productSchema.pre(/^find/, function (next) {
+    this.populate([
+        {
+            path: 'category',
+            select: 'name'
+        },
+        {
+            path: 'subCategories',
+            select: 'name'
+        }
+    ])
+    next();
+})
+
 const productModule = mongoose.model("products", productSchema);
 
 module.exports = productModule;
