@@ -1,9 +1,9 @@
 const express = require("express");
 
 const router = express.Router();
-const {signup, login} = require("../Controllers/authController");
+const {signup, login, changeEmail, changePassword, forgetPassword, verifyResetPasswordCode, resetPassword} = require("../Controllers/authController");
 const {addClientRole} = require("../Shared/addClientRole");
-const {signupValidation, loginValidation} = require("../Middlewares/Validations/authValidation");
+const {signupValidation, loginValidation, changeEmailValidation, changePasswordValidation, forgetPasswordValidation, verifyResetPasswordCodeValidation, resetPasswordValidation} = require("../Middlewares/Validations/authValidation");
 
 router.route("/signup")
     .post(addClientRole, signupValidation, signup)
@@ -11,8 +11,20 @@ router.route("/signup")
 router.route("/login")
     .post(loginValidation, login)
 
+router.route("/changeemail")
+    .post(changeEmailValidation, changeEmail)
+
+router.route("/changepassword")
+    .post(changePasswordValidation, changePassword)
+
 router.route("/forgetpassword")
-    .post(loginValidation, signup)
+    .post(forgetPasswordValidation, forgetPassword)
+
+router.route("/verifyresetpasswordcode")
+    .post(verifyResetPasswordCodeValidation, verifyResetPasswordCode)
+
+router.route("/resetpassword")
+    .post(resetPasswordValidation, resetPassword)
 
 
 module.exports = router;

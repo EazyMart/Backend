@@ -20,7 +20,7 @@ exports.signup = addDocument(userModel, 'User');
 // @desc    Update User
 // @route   PATCH /User/:id
 // @access  Private
-const properties = ["firstName", "lastName", "email", "password", "profileImage", "mobilePhone", "role", "available", "deleted"];
+const properties = ["firstName", "lastName", "profileImage", "mobilePhone", "role", "available", "deleted"];
 exports.updateUser = updateDocument(userModel, 'User', ...properties);
 
 // @desc    Delete User

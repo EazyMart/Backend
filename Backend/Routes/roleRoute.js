@@ -9,7 +9,7 @@ const {authontication, authorization} = require("../Middlewares/authoMiddleware"
 router.route("/")
     .all(authontication, authorization("roles"))
     .get(getAllRoles)
-    .post(authontication, authorization("roles"), addRoleValidation, addrole)
+    .post(addRoleValidation, addrole)
 
 router.route("/:id")
     .all(authontication, authorization("roles"), idValidation)

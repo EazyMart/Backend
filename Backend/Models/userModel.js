@@ -5,6 +5,23 @@ const bcrypt = require("bcrypt");
 const salt = bcrypt.genSaltSync(+process.env.salt_round);
 const AutoIncrement = require('../Config/autoIncrementInitialization');
 
+const resetPasswordCode = mongoose.Schema(
+    {
+        code: {
+            type: String
+        },
+        expirationTime: {
+            type: Date
+        },
+        isVerified: {
+            type: Boolean,
+            default: false
+        }
+    }, 
+    {_id: false}
+)
+
+
 const userSchema = mongoose.Schema(
     {
         _id: {
@@ -38,6 +55,9 @@ const userSchema = mongoose.Schema(
             type: String,
             trim: true,
             required: [true, 'Password is required']    
+        },
+        resetPasswordCode: {
+            type: resetPasswordCode
         },
         passwordUpdatedTime: {
             type: Date
@@ -73,7 +93,12 @@ const userSchema = mongoose.Schema(
 userSchema.plugin(AutoIncrement.plugin, {model: 'users', startAt: 1,});
 
 userSchema.pre('save', function(next) {
-    this.password = bcrypt.hashSync(this.password, salt);
+    if(this.password) {
+        this.password = bcrypt.hashSync(this.password, salt);
+    }
+    if(this.resetPasswordCode && this.resetPasswordCode.code && typeof this.resetPasswordCode.code === 'number') {
+        this.resetPasswordCode.code = bcrypt.hashSync(this.resetPasswordCode.code, salt);
+    }
     next();
 });
 

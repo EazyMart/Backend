@@ -57,3 +57,72 @@ exports.loginValidation = [
 
     errorValidator
 ]
+
+exports.changeEmailValidation = [
+	check("currentEmail")
+		.notEmpty().withMessage("Current Email is required")
+		.matches(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/).withMessage("Invalid email"),
+	
+	check("newEmail")
+		.notEmpty().withMessage("New Email is required")
+		.matches(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/).withMessage("Invalid email"),
+
+    check("password")
+		.notEmpty().withMessage("Password is required"),
+
+    errorValidator
+]
+
+exports.changePasswordValidation = [
+	check("email")
+		.notEmpty().withMessage("Email is required")
+		.matches(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/).withMessage("Invalid email"),
+
+    check("currentPassword")
+		.notEmpty().withMessage("Current Password is required"),
+
+	check("newPassword")
+		.notEmpty().withMessage("New Password is required")
+		.matches(/^(?=.*[!@#$%^&*()])(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/).withMessage("Password must contain upper, lower characters, numbers and special characters"),
+
+
+    errorValidator
+]
+
+exports.forgetPasswordValidation = [
+	check("email")
+		.notEmpty().withMessage("Email is required")
+		.matches(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/).withMessage("Invalid email"),
+
+    errorValidator
+]
+
+exports.verifyResetPasswordCodeValidation = [
+	check("email")
+		.notEmpty().withMessage("Email is required")
+		.matches(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/).withMessage("Invalid email"),
+
+	check("code")
+		.notEmpty().withMessage("Reset Code is required")
+		.isInt().withMessage("Reset Code must be an integer number")
+		.custom(value => {
+			if(value.toString().length !== 6) {
+				throw new Error("Invalid code")
+			}
+			return true
+		}),
+
+    errorValidator
+]
+
+exports.resetPasswordValidation = [
+	check("email")
+		.notEmpty().withMessage("Email is required")
+		.matches(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/).withMessage("Invalid email"),
+
+	check("newPassword")
+		.notEmpty().withMessage("New Password is required")
+		.matches(/^(?=.*[!@#$%^&*()])(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/).withMessage("Password must contain upper, lower characters, numbers and special characters"),
+
+    errorValidator
+]

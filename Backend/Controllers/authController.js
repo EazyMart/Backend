@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -6,6 +7,7 @@ const APIError = require("../Helper/APIError");
 const CreateResponse = require("../ResponseObject/responseObject");
 const userModel = require("../Models/userModel");
 const {addDocument} = require("./baseController");
+const {sendEmail} = require("../Helper/sendEmail")
 
 // @desc    Signup
 // @route   POST /auth/signup
@@ -29,6 +31,7 @@ exports.login = asyncHandler(async (request, response, next) => {
                 }, 
                 token: token,
             }]));
+        return;
     }
     next(new APIError('Your email or password may be incorrect', 403));
 })
@@ -39,9 +42,26 @@ exports.login = asyncHandler(async (request, response, next) => {
 exports.changeEmail = asyncHandler(async (request, response, next) => {
     const user = await userModel.findOne({email: request.body.currentEmail});
     if(user && await bcrypt.compare(request.body.password, user.password)) {
-        const result = user.findOneAndUpdate({_id: user._id}, {email: request.body.newEmail});
+        const result = await userModel.findOneAndUpdate({_id: user._id}, {email: request.body.newEmail});
         if(result) {
-            response.status(200).json(CreateResponse(true, 'Your Email Is changed successfully'));
+            response.status(200).json(CreateResponse(true, 'Your Email is updated successfully'));
+            return;
+        }
+        next(new APIError('Somewrong occur, please try agian', 500));
+    }
+    next(new APIError('Your email or password may be incorrect', 401));
+})
+
+// @desc    Change Password
+// @route   POST /auth/changepassword
+// @access  Public
+exports.changePassword = asyncHandler(async (request, response, next) => {
+    const user = await userModel.findOne({email: request.body.email});
+    if(user && await bcrypt.compare(request.body.currentPassword, user.password)) {
+        const result = await userModel.findOneAndUpdate({_id: user._id}, {email: request.body.newPassword});
+        if(result) {
+            response.status(200).json(CreateResponse(true, 'Your Password is updated successfully, please login again.'));
+            return;
         }
         next(new APIError('Somewrong occur, please try agian', 500));
     }
@@ -52,12 +72,79 @@ exports.changeEmail = asyncHandler(async (request, response, next) => {
 // @route   POST /auth/forgetpassword
 // @access  Public
 exports.forgetPassword = asyncHandler(async (request, response, next) => {
+    const user = await userModel.findOne({ email: request.body.email });
+    if(user) {
+        try {
+            const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+            const message = `
+            <h3>Hi ${user.firstName} ${user.lastName}</h3>
+            <p>We received a request to reset your password on your E-shop account.</p>
+            <p>This is your reset password code</p
+            <strong style="font-size: 18px">${resetCode}</strong>
+            <p>Enter this code to complete the reset</p>
+            <p>Thanks for helping us keep your account secure.</p>
+            <p>E-shop Team</p>
+            `
+            await sendEmail({email: user.email, subject: "Reset Password Code", message: message});
 
+            user.resetPasswordCode = {
+                code: resetCode,
+                expirationTime: Date.now() + 10 * 60 * 1000, // 10 minutes from the time of reset code generation
+                isVerified: false
+            }
+            await user.save();
+
+        }
+        catch(error) {
+            next(new APIError("The email is not send, pleas try again", 500));
+            return;
+        }
+    }
+    response.status(200).json(CreateResponse(true, 'If your email is found, you will receive a reset code to reset your password'));
 })
 
-// @desc    Reset Password
-// @route   POST /auth/resetpassword
-// @access  Private
-exports.resetPassword = asyncHandler(async (request, response, next) => {
+// @desc    Verify Reset Password Code
+// @route   POST /auth/verifyresetpasswordcode
+// @access  Public
+exports.verifyResetPasswordCode = asyncHandler(async (request, response, next) => {
+    const user = await userModel.findOne({email: request.body.email}, {email: 1, resetPasswordCode: 1})
+    if(user) {
+        if(user.resetPasswordCode && user.resetPasswordCode.code && await bcrypt.compareSync(request.body.code.toString(), user.resetPasswordCode.code)) {
+            if(user.resetPasswordCode.expirationTime >= Date.now()) {
+                if(user.resetPasswordCode.isVerified === false) {
+                    user.resetPasswordCode.isVerified = true;
+                    await user.save();
+                    response.status(200).json(CreateResponse(true, 'Your code is verified'));
+                    return;
+                }
+                throw new APIError("This code is already used before, try to ask another code", 400);
+            }
+            throw new APIError("This code expired, try to ask another code", 400);
+        }
+        throw new APIError("Invalid code, try to ask another code", 400);
+    }
+})
 
+// @desc    Verify Reset Password
+// @route   POST /auth/resetpassword
+// @access  Public
+exports.resetPassword = asyncHandler(async (request, response, next) => {
+    const user = await userModel.findOne({email: request.body.email}, {email: 1, resetPasswordCode: 1})
+    if(user) {
+        if(user.resetPasswordCode.expirationTime >= Date.now()) {
+            if(user.resetPasswordCode.isVerified) {
+                user.password = request.body.newPassword;
+                user.resetPasswordCode = {
+                    code: undefined,
+                    expirationTime: undefined,
+                    isVerified: undefined,
+                }
+                await user.save();
+                response.status(200).json(CreateResponse(true, 'Your password is reset successfully'));
+                return;
+            }
+            throw new APIError("This code is already used before, try to ask another code", 400);
+        }
+        throw new APIError("This code expired, try to ask another code", 400);
+    }
 })
