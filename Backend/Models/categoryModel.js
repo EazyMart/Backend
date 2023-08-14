@@ -10,13 +10,13 @@ const categorySchema = mongoose.Schema(
         name: {
             type: String,
             trim: true,
-            required: [true, 'Catgory name is required'],
+            required: [true, 'Category name is required'],
             minlength: [3, 'Too short category name, must be 3 characters at least'],
             maxlength: [32, 'Too long category name, must be 32 characters at most'],
         },
         slug: { // A and B => a-and-b
             type: String,
-            unique: [true, 'This catgory is already found'],
+            unique: [true, 'This category is already found'],
             lowercase: true        
         },
         image: {

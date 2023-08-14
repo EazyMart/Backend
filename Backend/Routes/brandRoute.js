@@ -5,18 +5,19 @@ const {getAllBrands, getBrandById, addBrand, updateBrand, deleteBrand} = require
 const {idValidation} = require("../Middlewares/Validations/idValidation")
 const {addBrandValidation, updateBrandValidation} = require("../Middlewares/Validations/brandValidation")
 const {uploadImageList, toFirebase} = require("../uploadFiles/uploadImage");
+const {authontication, authorization} = require("../Middlewares/authoMiddleware");
 
 const uploadFiles = [{name: "image", maxCount: 1}];
 
 router.route("/")
     .get(getAllBrands)
-    .post(uploadImageList(uploadFiles), toFirebase(uploadFiles, "brand", "brands"), addBrandValidation, addBrand)
+    .post(authontication, authorization("brands"), uploadImageList(uploadFiles), toFirebase(uploadFiles, "brand", "brands"), addBrandValidation, addBrand)
 
 router.route("/:id")
     .all(idValidation)
     .get(getBrandById)
-    .patch(uploadImageList(uploadFiles), toFirebase(uploadFiles, "brand", "brands"), updateBrandValidation, updateBrand)
-    .delete(deleteBrand)
+    .patch(authontication, authorization("brands"), uploadImageList(uploadFiles), toFirebase(uploadFiles, "brand", "brands"), updateBrandValidation, updateBrand)
+    .delete(authontication, authorization("brands"), deleteBrand)
 
 
 module.exports = router;

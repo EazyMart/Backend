@@ -1,7 +1,7 @@
 const fs = require('fs');
 const express = require("express");
 const morgan = require("morgan");
-const dotenv = require("dotenv").config({path: "config.env"});
+require("dotenv").config({path: "config.env"});
 const cors = require("cors");
 const APIError = require("./Helper/APIError");
 const globalError = require("./Middlewares/errorMiddleware")
@@ -10,13 +10,18 @@ const categoryRoute = require("./Routes/categoryRoute");
 const subCategoryRoute = require("./Routes/subCategoryRoute");
 const brandRoute = require("./Routes/brandRoute");
 const productRoute = require("./Routes/productRoute");
+const roleRoute = require("./Routes/roleRoute");
+const userRoute = require("./Routes/userRoute");
+const authRoute = require("./Routes/authRoute");
 
 
 //Start The App
 const app = express();
 
+
 const port = process.env.Port || 8000;
 let server = app.listen();
+
 
 //Connection on Atlas Mongodb
 dbConnection().then(() => {
@@ -24,6 +29,7 @@ dbConnection().then(() => {
         console.log(`App is running at: http://localhost:${port}/`);
     })
 })
+
 
 //Middlewares
 app.use(cors()) //allow cors for external clients
@@ -39,20 +45,22 @@ if(process.env.NODE_ENV === "development") //log all requests into external file
     )
 }
 
-//All outer clinics to access static files
-app.use("/uploads/images", express.static("uploads/images"));
 
 //Routes
+app.use('/auth', authRoute);
+app.use('/user', userRoute);
 app.use('/category', categoryRoute);
 app.use('/subcategory', subCategoryRoute);
 app.use('/brand', brandRoute);
 app.use('/product', productRoute);
+app.use('/role', roleRoute);
 
 
 //Notfound Middleware
 app.all('*', (request, response, next) => {
     next(new APIError(`This route is not found: ${request.originalUrl}`, 400))
 });
+
 
 // Error MiddleWare
 app.use(globalError);

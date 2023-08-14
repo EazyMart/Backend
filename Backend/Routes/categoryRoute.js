@@ -6,6 +6,7 @@ const {idValidation} = require("../Middlewares/Validations/idValidation")
 const {addCategoryValidation, updateCategoryValidation} = require("../Middlewares/Validations/categoryValidation")
 const subCategoryRoute = require("./subCategoryRoute");
 const {uploadImageList, toFirebase} = require("../uploadFiles/uploadImage");
+const {authontication, authorization} = require("../Middlewares/authoMiddleware");
 
 //Redirect to subcategory route
 router.use("/:categoryId/subcategory", subCategoryRoute);
@@ -14,13 +15,13 @@ const uploadFiles = [{name: "image", maxCount: 1}];
 
 router.route("/")
     .get(getAllCategories)
-    .post(uploadImageList(uploadFiles), toFirebase(uploadFiles, "category", "categories"), addCategoryValidation, addCategory)
+    .post(authontication, authorization("categories"), uploadImageList(uploadFiles), toFirebase(uploadFiles, "category", "categories"), addCategoryValidation, addCategory)
 
 router.route("/:id")
     .all(idValidation)
     .get(getCategoryById)
-    .patch(uploadImageList(uploadFiles), toFirebase(uploadFiles, "category", "categories"), updateCategoryValidation, updateCategory)
-    .delete(deleteCategory)
+    .patch(authontication, authorization("categories"), uploadImageList(uploadFiles), toFirebase(uploadFiles, "category", "categories"), updateCategoryValidation, updateCategory)
+    .delete(authontication, authorization("categories"), deleteCategory)
 
 
 module.exports = router;
