@@ -80,6 +80,10 @@ const userSchema = mongoose.Schema(
             type: Boolean,
             default: true
         },
+        blocked:{
+            type: Boolean,
+            default: false
+        },
         deleted: {
             type: Boolean,
             default: false
@@ -96,19 +100,11 @@ userSchema.pre('save', function(next) {
     if(this.password) {
         this.password = bcrypt.hashSync(this.password, salt);
     }
-    if(this.resetPasswordCode && this.resetPasswordCode.code && typeof this.resetPasswordCode.code === 'number') {
-        this.resetPasswordCode.code = bcrypt.hashSync(this.resetPasswordCode.code, salt);
+    if(this.resetPasswordCode && this.resetPasswordCode.code && +this.resetPasswordCode.code) {
+        this.resetPasswordCode.code = bcrypt.hashSync(this.resetPasswordCode.code.toString(), salt);
     }
     next();
 });
-
-userSchema.pre('findOneAndUpdate', function(next) {
-    if(this._update.password) {
-        this._update.password = bcrypt.hashSync(this._update.password, salt);
-        this._update.passwordUpdatedTime = Date.now();
-    }
-    next();
-});  
 
 userSchema.pre(/^find/, function (next) {
     this.populate({

@@ -10,7 +10,7 @@ exports.getAllDocuments = (model, searchFields, modelName = 'Items') =>
         const {page, limit, skip, totalPages} = await pagination(request, await model.countDocuments(filtedFields));
         const AllProducts = await model.find(filtedFields, select(request)).skip(skip).limit(limit).sort(sort(request));
         response.status(200).json(CreateResponse(true, `All ${modelName} are retrieved successfully`, AllProducts, page, limit, totalPages));
-    })
+})
 
 exports.getDocumentById = (model, modelName = 'Item') => 
     asyncHandler(async (request, response, next) => {
@@ -20,24 +20,28 @@ exports.getDocumentById = (model, modelName = 'Item') =>
             return;
         }
         response.status(200).json(CreateResponse(true, `The data of this ${modelName} is retrieved successfully`, [document]));
-    })
+})
 
 exports.addDocument = (model, modelName = 'Item') => 
     asyncHandler(async (request, response) => {
         const document = await model.create(request.body);
         response.status(201).json(CreateResponse(true, `The ${modelName} is added successfully`, [document]));
-    })
+})
 
 exports.updateDocument = (model, modelName = 'Item', ...properties) => 
-    asyncHandler(async (request, response, next) => {        
+    asyncHandler(async (request, response, next) => {
         const targetFields = updatedFields(request, properties);
-        const updatedDocument = await model.findOneAndUpdate({_id: request.params.id}, targetFields, {new: true})
-        if(!updatedDocument) {
-            next(new APIError(`This ${modelName} is not found`, 404));
+        if(Object.keys(targetFields).length > 0) { 
+            const updatedDocument = await model.findOneAndUpdate({_id: request.params.id}, targetFields, {new: true})
+            if(!updatedDocument) {
+                next(new APIError(`This ${modelName} is not found`, 404));
+                return;
+            }
+            response.status(200).json(CreateResponse(true, `This ${modelName} is updated successfully`, [updatedDocument]));
             return;
-        }
-        response.status(200).json(CreateResponse(true, `This ${modelName} is updated successfully`, [updatedDocument]));
-    })
+        }        
+        response.status(200).json(CreateResponse(true, `Nothing is updated`));
+})
 
 exports.deleteDocument = (model, modelName = 'Item') =>
     asyncHandler(async (request, response, next) => {
@@ -47,4 +51,4 @@ exports.deleteDocument = (model, modelName = 'Item') =>
             return;
         }
         response.status(204).json();
-    })
+})

@@ -1,4 +1,3 @@
-const crypto = require("crypto");
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -18,8 +17,20 @@ exports.signup = addDocument(userModel, 'User');
 // @route   POST /auth/login
 // @access  Public
 exports.login = asyncHandler(async (request, response, next) => {        
-    const user = await userModel.findOne({email: request.body.email}, {__v: 0, available: 0, deleted: 0, createdAt: 0, updatedAt: 0});
+    const user = await userModel.findOne({email: request.body.email}, {__v: 0, createdAt: 0, updatedAt: 0});
     if(user && await bcrypt.compare(request.body.password, user.password)) {
+        if(user.deleted) {
+            next(new APIError('Your account is deleted', 403));
+            return;
+        }
+        if(user.blocked) {
+            next(new APIError('Your account is blocked', 403));
+            return;
+        }
+        if(!user.available) {
+            user.available = true;
+            await user.save();
+        }
         const token = jwt.sign({id: user._id, role: user.role}, process.env.Secret_Key, {expiresIn: process.env.Expiration_Time});
         response.status(200).json(CreateResponse(true, 'Login successfully', [
             {
@@ -36,38 +47,6 @@ exports.login = asyncHandler(async (request, response, next) => {
     next(new APIError('Your email or password may be incorrect', 403));
 })
 
-// @desc    Change Email
-// @route   POST /auth/changeemail
-// @access  Public
-exports.changeEmail = asyncHandler(async (request, response, next) => {
-    const user = await userModel.findOne({email: request.body.currentEmail});
-    if(user && await bcrypt.compare(request.body.password, user.password)) {
-        const result = await userModel.findOneAndUpdate({_id: user._id}, {email: request.body.newEmail});
-        if(result) {
-            response.status(200).json(CreateResponse(true, 'Your Email is updated successfully'));
-            return;
-        }
-        next(new APIError('Somewrong occur, please try agian', 500));
-    }
-    next(new APIError('Your email or password may be incorrect', 401));
-})
-
-// @desc    Change Password
-// @route   POST /auth/changepassword
-// @access  Public
-exports.changePassword = asyncHandler(async (request, response, next) => {
-    const user = await userModel.findOne({email: request.body.email});
-    if(user && await bcrypt.compare(request.body.currentPassword, user.password)) {
-        const result = await userModel.findOneAndUpdate({_id: user._id}, {email: request.body.newPassword});
-        if(result) {
-            response.status(200).json(CreateResponse(true, 'Your Password is updated successfully, please login again.'));
-            return;
-        }
-        next(new APIError('Somewrong occur, please try agian', 500));
-    }
-    next(new APIError('Your email or password may be incorrect', 401));
-})
-
 // @desc    Forget Password
 // @route   POST /auth/forgetpassword
 // @access  Public
@@ -75,7 +54,7 @@ exports.forgetPassword = asyncHandler(async (request, response, next) => {
     const user = await userModel.findOne({ email: request.body.email });
     if(user) {
         try {
-            const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+            const resetCode = Math.floor(100000 + Math.random() * 900000);
             const message = `
             <h3>Hi ${user.firstName} ${user.lastName}</h3>
             <p>We received a request to reset your password on your E-shop account.</p>

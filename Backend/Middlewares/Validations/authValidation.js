@@ -58,37 +58,6 @@ exports.loginValidation = [
     errorValidator
 ]
 
-exports.changeEmailValidation = [
-	check("currentEmail")
-		.notEmpty().withMessage("Current Email is required")
-		.matches(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/).withMessage("Invalid email"),
-	
-	check("newEmail")
-		.notEmpty().withMessage("New Email is required")
-		.matches(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/).withMessage("Invalid email"),
-
-    check("password")
-		.notEmpty().withMessage("Password is required"),
-
-    errorValidator
-]
-
-exports.changePasswordValidation = [
-	check("email")
-		.notEmpty().withMessage("Email is required")
-		.matches(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/).withMessage("Invalid email"),
-
-    check("currentPassword")
-		.notEmpty().withMessage("Current Password is required"),
-
-	check("newPassword")
-		.notEmpty().withMessage("New Password is required")
-		.matches(/^(?=.*[!@#$%^&*()])(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/).withMessage("Password must contain upper, lower characters, numbers and special characters"),
-
-
-    errorValidator
-]
-
 exports.forgetPasswordValidation = [
 	check("email")
 		.notEmpty().withMessage("Email is required")

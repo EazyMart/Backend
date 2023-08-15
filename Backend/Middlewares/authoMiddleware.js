@@ -16,7 +16,7 @@ const authontication = asyncHandler(async (request, response, next) => {
                     throw new APIError("Unathorized, try to login again", 401);
                 }
             }
-            request.role = decodedPayload.role;
+            request.user = decodedPayload;
             next();
             return;
         }
@@ -24,12 +24,11 @@ const authontication = asyncHandler(async (request, response, next) => {
     throw new APIError("Unathorized, try to login again", 401);
 });
 
-
 const authorization = (modelName) =>
 asyncHandler(async (request, response, next) => { 
     const permission = request.method.toLowerCase();
     // eslint-disable-next-line no-restricted-syntax
-    for(const allowedModel of request.role.allowedModels) {
+    for(const allowedModel of request.user.role.allowedModels) {
         if(allowedModel.modelName.toLowerCase() === modelName.toLowerCase() && allowedModel.permissions.includes(permission)) {
             next();
             return;
@@ -39,5 +38,20 @@ asyncHandler(async (request, response, next) => {
     throw new APIError(`Not Allowed to ${permission === "post" ? "add" : permission || permission === "patch" ? "update" : permission} ${modelName}`, 403);
 });
 
+const PreventClientRole = asyncHandler(async (request, response, next) => { 
+    if(request.user.role.name.toLowerCase() === "client") {
+        throw new APIError('Not allowed to access this route', 403);
+    }
+    next();
+});
 
-module.exports = {authontication, authorization};
+const checkParamIdEqualTokenId = asyncHandler(async (request, response, next) => { 
+    if(request.user.role.name.toLowerCase() === "client") {
+        if(+request.params.id !== request.user.id) {
+            throw new APIError('Not allowed to access this route', 403);
+        }
+    }
+    next();
+});
+
+module.exports = {authontication, authorization, PreventClientRole, checkParamIdEqualTokenId};

@@ -36,8 +36,8 @@ exports.addUserValidation = [
 	check("role")
 		.notEmpty().withMessage("Any user must have a role")
 		.isInt().withMessage("Invalid Role")
-		.custom((value) => {
-			const role = roleModel.findById(value, {_id: 1});
+		.custom(async (value) => {
+			const role = await roleModel.findById(value, {_id: 1});
 			if(role) {
 				return true;
 			}
@@ -62,14 +62,6 @@ exports.updateUserValidation = [
 		.isLength({max: 32}).withMessage("Too long lastname, 32 characters at most")
 		.matches(/^[a-zA-Z]+$/g).withMessage("Lastname must contain only characters"),
 
-	check("email")
-		.optional()
-		.matches(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/).withMessage("Invalid email"),
-
-    check("password")
-		.optional()
-		.matches(/^(?=.*[!@#$%^&*()])(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/).withMessage("Password must contain upper, lower characters, numbers and special characters"),
-    
 	check("profileImage")
 		.optional()
 		.isURL().withMessage("Invalid Photo"),
@@ -81,13 +73,55 @@ exports.updateUserValidation = [
 	check("role")
 		.optional()
 		.isInt().withMessage("Invalid Role")
-		.custom((value) => {
-			const role = roleModel.findById(value, {_id: 1});
+		.custom(async (value) => {
+			const role = await roleModel.findById(value, {_id: 1});
 			if(role) {
 				return true;
 			}
 			throw new Error(`This role doesn't exist`);
 		}),
+
+	check("available")
+        .optional()
+        .isBoolean().withMessage("Available must be boolean"),
+
+	check("blocked")
+        .optional()
+        .isBoolean().withMessage("Blocked must be boolean"),
+
+    check("deleted")
+        .optional()
+        .isBoolean().withMessage("Deleted must be boolean"),
+    errorValidator
+]
+
+exports.changeEmailValidation = [
+	check("currentEmail")
+		.notEmpty().withMessage("Current Email is required")
+		.matches(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/).withMessage("Invalid email"),
+	
+	check("newEmail")
+		.notEmpty().withMessage("New Email is required")
+		.matches(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/).withMessage("Invalid email"),
+
+    check("password")
+		.notEmpty().withMessage("Password is required"),
+
+    errorValidator
+]
+
+exports.changePasswordValidation = [
+	check("email")
+		.notEmpty().withMessage("Email is required")
+		.matches(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/).withMessage("Invalid email"),
+
+    check("currentPassword")
+		.notEmpty().withMessage("Current Password is required"),
+
+	check("newPassword")
+		.notEmpty().withMessage("New Password is required")
+		.matches(/^(?=.*[!@#$%^&*()])(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/).withMessage("Password must contain upper, lower characters, numbers and special characters"),
+
 
     errorValidator
 ]
