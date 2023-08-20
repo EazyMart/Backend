@@ -2,9 +2,8 @@ const bcrypt = require("bcrypt");
 const asyncHandler = require("express-async-handler");
 const CreateResponse = require("../ResponseObject/responseObject");
 const APIError = require("../Helper/APIError");
-
 const userModel = require("../Models/userModel");
-const {getAllDocuments, getDocumentById, addDocument, updateDocument, deleteDocument} = require("./baseController");
+const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./baseController");
 
 // @desc    Create All users
 // @route   GET /user
@@ -70,4 +69,4 @@ exports.changePassword = asyncHandler(async (request, response, next) => {
 // @desc    Delete User
 // @route   DELETE /user/:id
 // @access  Private
-exports.deleteUser = deleteDocument(userModel, 'User');
+exports.deleteUser = softDeleteDocument(userModel, 'User');

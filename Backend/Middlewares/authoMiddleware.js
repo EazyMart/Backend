@@ -38,9 +38,16 @@ asyncHandler(async (request, response, next) => {
     throw new APIError(`Not Allowed to ${permission === "post" ? "add" : permission || permission === "patch" ? "update" : permission} ${modelName}`, 403);
 });
 
-const PreventClientRole = asyncHandler(async (request, response, next) => { 
+const preventClientRole = asyncHandler(async (request, response, next) => { 
     if(request.user.role.name.toLowerCase() === "client") {
         throw new APIError('Not allowed to access this route', 403);
+    }
+    next();
+});
+
+const allowClientRole = asyncHandler(async (request, response, next) => { 
+    if(request.user.role.name.toLowerCase() !== "client") {
+        throw new APIError('The clients only can add reviews', 403);
     }
     next();
 });
@@ -54,4 +61,4 @@ const checkParamIdEqualTokenId = asyncHandler(async (request, response, next) =>
     next();
 });
 
-module.exports = {authontication, authorization, PreventClientRole, checkParamIdEqualTokenId};
+module.exports = {authontication, authorization, preventClientRole, allowClientRole, checkParamIdEqualTokenId};

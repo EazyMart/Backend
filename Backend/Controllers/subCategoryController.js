@@ -1,15 +1,5 @@
 const subCategoryModel = require("../Models/subCategoryModel")
-const {getAllDocuments, getDocumentById, addDocument, updateDocument, deleteDocument} = require("./baseController");
-
-// @desc    Set CategoryId To Request Body
-// @route   No Route 
-// @access  No
-exports.setCategoryIdToRequestBody = (request, response, next) => {
-    if(!request.body.category) {
-        request.body.category = +request.params.categoryId
-    }
-    next();
-}
+const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./baseController");
 
 // @desc    Create All SubCategories for specific category
 // @route   GET /subcategory
@@ -36,4 +26,4 @@ exports.updateSubCategory = updateDocument(subCategoryModel, 'SubCategory', ...p
 // @desc    Delete SubCategory
 // @route   DELETE /subcategory/:id
 // @access  Private
-exports.deleteSubCategory = deleteDocument(subCategoryModel, 'SubCategory');
+exports.deleteSubCategory = softDeleteDocument(subCategoryModel, 'SubCategory');

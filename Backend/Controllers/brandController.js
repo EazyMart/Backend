@@ -1,5 +1,5 @@
 const brandModel = require("../Models/brandModel")
-const {getAllDocuments, getDocumentById, addDocument, updateDocument, deleteDocument} = require("./baseController");
+const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./baseController");
 
 // @desc    Create All Brands
 // @route   GET /brand
@@ -26,4 +26,4 @@ exports.updateBrand = updateDocument(brandModel, 'Brand', ...properties);
 // @desc    Delete Brand
 // @route   DELETE /Brand/:id
 // @access  Private
-exports.deleteBrand = deleteDocument(brandModel, 'Brand');
+exports.deleteBrand = softDeleteDocument(brandModel, 'Brand');

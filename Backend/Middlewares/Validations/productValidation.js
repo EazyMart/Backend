@@ -66,7 +66,7 @@ exports.addProductValidation = [
 
 	check("imageCover")
 		.notEmpty().withMessage("Any product must have an image as cover")
-		.isString().withMessage("Image cover must be string"),
+		.isURL().withMessage("Image cover must be URL"),
 	
 	check("images")
 		.optional()
@@ -202,7 +202,7 @@ exports.updateProductValidation = [
 
 	check("imageCover")
 		.optional()
-		.isString().withMessage("Image cover must be string"),
+		.isURL().withMessage("Image cover must be URL"),
 	
 	check("images")
 		.optional()

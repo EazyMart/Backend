@@ -1,5 +1,5 @@
 const productModel = require("../Models/productModel")
-const {getAllDocuments, getDocumentById, addDocument, updateDocument, deleteDocument} = require("./baseController");
+const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./baseController");
 
 // @desc    Create All Products
 // @route   GET /product
@@ -26,4 +26,4 @@ exports.updateProduct = updateDocument(productModel, 'Product', ...properties);
 // @desc    Delete Product
 // @route   DELETE /Product/:id
 // @access  Private
-exports.deleteProduct = deleteDocument(productModel, 'Product');
+exports.deleteProduct = softDeleteDocument(productModel, 'Product');

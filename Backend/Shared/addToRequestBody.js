@@ -10,4 +10,18 @@ const addSubCategoriesToRequestBody = async (request) => {
     request.body.subCategories = product.subCategories
 }
 
-module.exports = {addCategoryIdToRequestBody, addSubCategoriesToRequestBody}
+const addParentIdToRequestBody = (parent, id) => (request, response, next) => {
+    if(!request.body[parent]) {
+        request.body[parent] = +request.params[id]
+    }
+    next();
+}
+
+const addParentIdToRequestQuery = (parent, id) => (request, response, next) => {
+    if(request.params[id]) {
+        request.query[parent] = +request.params[id]
+    }
+    next();
+}
+
+module.exports = {addCategoryIdToRequestBody, addSubCategoriesToRequestBody, addParentIdToRequestQuery, addParentIdToRequestBody}

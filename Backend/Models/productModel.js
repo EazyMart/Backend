@@ -88,10 +88,19 @@ const productSchema = mongoose.Schema(
     },
     {
         timestamps: true,
+        toJSON: {virtuals: true},
+        id: false //Disable automatic 'id' generation   
     }
 )
 
-productSchema.plugin(AutoIncrement.plugin, {model: 'products', startAt: 1,});
+productSchema.virtual("reviews", {
+    ref: 'reviews',
+    foreignField: "product",
+    localField: "_id",
+    justOne: true // To retrun only one review to make the response more light
+})
+
+productSchema.plugin(AutoIncrement.plugin, {model: 'products', startAt: 1});
 
 //Set value to slug property before adding new category to the database
 productSchema.pre('save', function(next) {
@@ -109,7 +118,7 @@ productSchema.pre('findOneAndUpdate', function(next) {
 
 //To populate with each find query
 productSchema.pre(/^find/, function (next) {
-    this.populate([
+    const populateFields = [
         {
             path: 'category',
             select: 'name'
@@ -118,7 +127,14 @@ productSchema.pre(/^find/, function (next) {
             path: 'subCategories',
             select: 'name'
         }
-    ])
+    ]
+    if(this.op === "findOne") {
+        populateFields.push({
+            path: 'reviews',
+            select: 'comment -product'
+        })
+    }
+    this.populate(populateFields)
     next();
 })
 

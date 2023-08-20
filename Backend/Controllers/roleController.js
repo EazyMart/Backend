@@ -1,5 +1,5 @@
 const roleModel = require("../Models/roleModel")
-const {getAllDocuments, getDocumentById, addDocument, updateDocument, deleteDocument} = require("./baseController");
+const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./baseController");
 
 // @desc    Create All Categories
 // @route   GET /role
@@ -26,4 +26,4 @@ exports.updaterole = updateDocument(roleModel, 'Role', ...properties);
 // @desc    Delete role
 // @route   DELETE /role/:id
 // @access  Private
-exports.deleterole = deleteDocument(roleModel, 'Role');
+exports.deleterole = softDeleteDocument(roleModel, 'Role');

@@ -1,6 +1,7 @@
 const express = require("express");
 
-const {setCategoryIdToRequestBody, getAllSubCategories, getSubCategoryById, addSubCategory, updateSubCategory, deleteSubCategory} = require("../Controllers/subCategoryController");
+const {addParentIdToRequestBody, addParentIdToRequestQuery} = require("../Shared/addToRequestBody")
+const {getAllSubCategories, getSubCategoryById, addSubCategory, updateSubCategory, deleteSubCategory} = require("../Controllers/subCategoryController");
 const {idValidation} = require("../Middlewares/Validations/idValidation")
 const {addSubCategoryValidation, updateSubCategoryValidation} = require("../Middlewares/Validations/subCategoryValidation")
 const {uploadImageList, toFirebase} = require("../uploadFiles/uploadImage");
@@ -13,9 +14,8 @@ const uploadFiles = [{name: "image", maxCount: 1}];
 
 
 router.route("/")
-    .all(setCategoryIdToRequestBody)
-    .get(getAllSubCategories)
-    .post(authontication, authorization("subcategories"), uploadImageList(uploadFiles), toFirebase(uploadFiles, "subcategory", "subcategories"), addSubCategoryValidation, addSubCategory)
+    .get(addParentIdToRequestQuery("category", "categoryId"), getAllSubCategories)
+    .post(authontication, authorization("subcategories"), addParentIdToRequestBody("category", "categoryId"), uploadImageList(uploadFiles), toFirebase(uploadFiles, "subcategory", "subcategories"), addSubCategoryValidation, addSubCategory)
 
 router.route("/:id")
     .all(idValidation)

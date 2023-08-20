@@ -4,12 +4,17 @@ const CreateResponse = require("../ResponseObject/responseObject");
 const updatedFields = require("../Shared/updatedFields");
 const {filter, select, sort, pagination} = require("../Shared/queryRequest");
 
-exports.getAllDocuments = (model, searchFields, modelName = 'Items') => 
+exports.getAllDocuments = (model, modelName = 'Items', ...searchFields) => 
     asyncHandler(async (request, response) => {
         const filtedFields = filter(request, ...searchFields);
         const {page, limit, skip, totalPages} = await pagination(request, await model.countDocuments(filtedFields));
         const AllProducts = await model.find(filtedFields, select(request)).skip(skip).limit(limit).sort(sort(request));
-        response.status(200).json(CreateResponse(true, `All ${modelName} are retrieved successfully`, AllProducts, page, limit, totalPages));
+        if(AllProducts.length > 0) {
+            response.status(200).json(CreateResponse(true, `All ${modelName} are retrieved successfully`, AllProducts, page, limit, totalPages));
+        }
+        else {
+            response.status(200).json(CreateResponse(true, `Empty, No ${modelName} to show`, AllProducts, page, limit, totalPages));
+        }
 })
 
 exports.getDocumentById = (model, modelName = 'Item') => 
@@ -37,15 +42,26 @@ exports.updateDocument = (model, modelName = 'Item', ...properties) =>
                 next(new APIError(`This ${modelName} is not found`, 404));
                 return;
             }
+            await updatedDocument.save();
             response.status(200).json(CreateResponse(true, `This ${modelName} is updated successfully`, [updatedDocument]));
             return;
         }        
         response.status(200).json(CreateResponse(true, `Nothing is updated`));
 })
 
-exports.deleteDocument = (model, modelName = 'Item') =>
+exports.softDeleteDocument = (model, modelName = 'Item') =>
     asyncHandler(async (request, response, next) => {
         const deletedDocument = await model.findOneAndUpdate({_id: request.params.id}, {deleted: true, available: false})
+        if(!deletedDocument) {
+            next(new APIError(`This ${modelName} is not found`, 404));
+            return;
+        }
+        response.status(204).json();
+})
+
+exports.hardDeleteDocument = (model, modelName = 'Item') =>
+    asyncHandler(async (request, response, next) => {
+        const deletedDocument = await model.findOneAndDelete({_id: request.params.id})
         if(!deletedDocument) {
             next(new APIError(`This ${modelName} is not found`, 404));
             return;

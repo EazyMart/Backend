@@ -1,5 +1,5 @@
 const categoryModel = require("../Models/categoryModel")
-const {getAllDocuments, getDocumentById, addDocument, updateDocument, deleteDocument} = require("./baseController");
+const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./baseController");
 
 // @desc    Create All Categories
 // @route   GET /Category
@@ -26,4 +26,4 @@ exports.updateCategory = updateDocument(categoryModel, 'Category', ...properties
 // @desc    Delete Category
 // @route   DELETE /Category/:id
 // @access  Private
-exports.deleteCategory = deleteDocument(categoryModel, 'Category');
+exports.deleteCategory = softDeleteDocument(categoryModel, 'Category');

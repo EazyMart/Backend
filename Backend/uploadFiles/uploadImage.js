@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require("uuid");
 const {initializeApp} = require("firebase/app");
 const {getStorage, ref, uploadBytesResumable, getDownloadURL} = require("firebase/storage");
 const asyncHandler = require("express-async-handler")
+// eslint-disable-next-line import/no-unresolved, node/no-missing-require
 const {multerSettings} = require("../settings/multerSettings")
 const {firebaseConfig} = require("../Config/firebase");
 
@@ -23,21 +24,23 @@ const filterImageInfo = (request) => {
 
 const processImage = async (files) => {
     const processedImageBuffer = [];
-    // eslint-disable-next-line no-restricted-syntax, guard-for-in
-    for(const file of files) {
-        const processedFile = [];
+    if(files) {
         // eslint-disable-next-line no-restricted-syntax, guard-for-in
-        for(const info of file.fileInfo) {
-            if(info.size / 1024 > 200) {
-                // eslint-disable-next-line no-await-in-loop
-                const processedBuffer = await sharp(info.buffer, { failOnError: false }).toFormat("jpeg").jpeg({ mozjpeg: true, quality: 40}).toBuffer();
-                processedFile.push(processedBuffer);
+        for(const file of files) {
+            const processedFile = [];
+            // eslint-disable-next-line no-restricted-syntax, guard-for-in
+            for(const info of file.fileInfo) {
+                if(info.size / 1024 > 200) {
+                    // eslint-disable-next-line no-await-in-loop
+                    const processedBuffer = await sharp(info.buffer, { failOnError: false }).toFormat("jpeg").jpeg({ mozjpeg: true, quality: 40}).toBuffer();
+                    processedFile.push(processedBuffer);
+                }
+                else {
+                    processedFile.push(info.buffer);
+                }
             }
-            else {
-                processedFile.push(info.buffer);
-            }
+            processedImageBuffer.push({name: file.name, buffers: processedFile});
         }
-        processedImageBuffer.push({name: file.name, buffers: processedFile});
     }
     return processedImageBuffer;    
 }
