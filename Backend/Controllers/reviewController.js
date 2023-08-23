@@ -1,6 +1,9 @@
 const reviewModel = require("../Models/reviewModel")
 const {getAllDocuments, getDocumentById, addDocument, updateDocument, hardDeleteDocument} = require("./baseController");
 
+// @desc    Add user Id to request body
+// @route   No
+// @access  No
 exports.addLoginUserIdToRequestBody = (request, response, next) => {
     request.body.user = request.user.id;
     next();

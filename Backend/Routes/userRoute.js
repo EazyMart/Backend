@@ -6,6 +6,11 @@ const {idValidation} = require("../Middlewares/Validations/idValidation")
 const {addUserValidation, updateUserValidation, changeEmailValidation, changePasswordValidation} = require("../Middlewares/Validations/userValidation")
 const {uploadImageList, toFirebase} = require("../uploadFiles/uploadImage");
 const {authontication, authorization, preventClientRole, checkParamIdEqualTokenId} = require("../Middlewares/authoMiddleware");
+const wishlistRoute = require("./wishlistRoute");
+const addressRoute = require("./addressRoute");
+
+router.use("/:userId/wishlist", wishlistRoute);
+router.use("/:userId/address", addressRoute);
 
 const uploadFiles = [{name: "profileImage", maxCount: 1}];
 
@@ -25,11 +30,12 @@ router.route("/:id/changeemail")
     
 router.route("/:id/changepassword")
     .patch(changePasswordValidation, changePassword);
-    
+
 router.route("/:id/role")
     .patch(authontication, authorization("users"), preventClientRole, idValidation, updateUserValidation, updateUserRole);
 
 router.route("/:id/block")
     .patch(authontication, authorization("users"), preventClientRole, idValidation, updateUserValidation, blockUser);
+
 
 module.exports = router;

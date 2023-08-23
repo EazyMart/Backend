@@ -16,8 +16,8 @@ const categorySchema = mongoose.Schema(
         },
         slug: { // A and B => a-and-b
             type: String,
+            lowercase: true,        
             unique: [true, 'This category is already found'],
-            lowercase: true        
         },
         image: {
             type: String,

@@ -92,6 +92,7 @@ exports.updateUserValidation = [
     check("deleted")
         .optional()
         .isBoolean().withMessage("Deleted must be boolean"),
+		
     errorValidator
 ]
 
@@ -121,7 +122,6 @@ exports.changePasswordValidation = [
 	check("newPassword")
 		.notEmpty().withMessage("New Password is required")
 		.matches(/^(?=.*[!@#$%^&*()])(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/).withMessage("Password must contain upper, lower characters, numbers and special characters"),
-
 
     errorValidator
 ]

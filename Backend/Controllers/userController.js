@@ -33,7 +33,7 @@ exports.updateUser = updateDocument(userModel, 'User', ...properties);
 exports.updateUserRole = updateDocument(userModel, 'User', "role");
 
 // @desc    Block User
-// @route   POST /user/:id
+// @route   PATCH /user/:id
 // @access  Private
 exports.blockUser = updateDocument(userModel, 'User', "blocked");
 

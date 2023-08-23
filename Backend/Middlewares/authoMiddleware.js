@@ -40,23 +40,21 @@ asyncHandler(async (request, response, next) => {
 
 const preventClientRole = asyncHandler(async (request, response, next) => { 
     if(request.user.role.name.toLowerCase() === "client") {
-        throw new APIError('Not allowed to access this route', 403);
+        throw new APIError('Not allow to access this route', 403);
     }
     next();
 });
 
 const allowClientRole = asyncHandler(async (request, response, next) => { 
     if(request.user.role.name.toLowerCase() !== "client") {
-        throw new APIError('The clients only can add reviews', 403);
+        throw new APIError('The clients only can add new item on this route', 403);
     }
     next();
 });
 
-const checkParamIdEqualTokenId = asyncHandler(async (request, response, next) => { 
-    if(request.user.role.name.toLowerCase() === "client") {
-        if(+request.params.id !== request.user.id) {
-            throw new APIError('Not allowed to access this route', 403);
-        }
+const checkParamIdEqualTokenId = (userId = 'id') => asyncHandler(async (request, response, next) => { 
+    if(request.user.role.name.toLowerCase() === "client" &&+request.params[userId] !== request.user.id) {
+        throw new APIError('Not allow to access this route, the Id in route not match the Id in the token', 403);
     }
     next();
 });

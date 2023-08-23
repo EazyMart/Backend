@@ -1,6 +1,6 @@
 const express = require("express");
 
-const {addParentIdToRequestBody, addParentIdToRequestQuery} = require("../Shared/addToRequestBody");
+const {addParentIdFromParamToRequestBody, addParentIdFromParamToRequestQuery} = require("../Shared/addToRequestBody");
 const {getAllProducts, getProductById, addProduct, updateProduct, deleteProduct} = require("../Controllers/productController");
 const {idValidation} = require("../Middlewares/Validations/idValidation");
 const {addProductValidation, updateProductValidation} = require("../Middlewares/Validations/productValidation");
@@ -15,8 +15,8 @@ router.use("/:productId/review", reviewRoute);
 const uploadFiles = [{name: "imageCover", maxCount: 1}, {name: "images", maxCount: 5}]
 
 router.route("/")
-    .get(addParentIdToRequestQuery("category", "categoryId"), getAllProducts)
-    .post(authontication, authorization("products"), uploadImageList(uploadFiles), toFirebase(uploadFiles, "product", "products"), addParentIdToRequestBody("category", "categoryId"), addProductValidation, addProduct)
+    .get(addParentIdFromParamToRequestQuery("category", "categoryId"), getAllProducts)
+    .post(authontication, authorization("products"), uploadImageList(uploadFiles), toFirebase(uploadFiles, "product", "products"), addParentIdFromParamToRequestBody("category", "categoryId"), addProductValidation, addProduct)
 
 router.route("/:id")
     .all(idValidation)

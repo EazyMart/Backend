@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
 require("dotenv").config({path: "config.env"});
-// eslint-disable-next-line import/no-extraneous-dependencies, import/newline-after-import
+const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+
 const salt = bcrypt.genSaltSync(+process.env.salt_round);
 const AutoIncrement = require('../Config/autoIncrementInitialization');
 
@@ -21,6 +21,44 @@ const resetPasswordCode = mongoose.Schema(
     {_id: false}
 )
 
+const addressSchema = mongoose.Schema(
+    {
+        _id: {
+            type: mongoose.SchemaTypes.Number,
+        },
+        alias: { 
+            type: String,
+            required: [true, 'Any address must have an alias name'],
+            minlength: [3, 'Too short alias, must be 3 characters at least'],
+            maxlength: [20, 'Too long alias, must be 20 characters at most']
+        },
+        slug: {
+            type: String,
+        },
+        country: {
+            type: String,
+            required: [true, 'Any address must have a country'],
+            minlength: [3, 'Too short country, must be 3 characters at least'],
+            maxlength: [20, 'Too long country, must be 20 characters at most']
+        },
+        city: {
+            type: String,
+            required: [true, 'Any address must have a city'],
+            minlength: [3, 'Too short city, must be 3 characters at least'],
+            maxlength: [20, 'Too long city, must be 20 characters at most']
+        },
+        postalCode: {
+            type: String,
+            required: [true, 'Any address must have a postal code']
+        },
+        details: {
+            type: String,
+            required: [true, 'Any address must have details'],
+            minlength: [20, 'Too short details, must be 20 characters at least'],
+            maxlength: [200, 'Too long details, must be 200 characters at most'],
+        }
+    }
+)
 
 const userSchema = mongoose.Schema(
     {
@@ -71,6 +109,10 @@ const userSchema = mongoose.Schema(
             trim: true,
             required: [true, 'Mobile phone is required']
         },
+        addresses: {
+            type: [addressSchema],
+            default: []
+        },
         role: {
             type: Number,
             ref: 'roles',
@@ -94,7 +136,7 @@ const userSchema = mongoose.Schema(
     }
 )
 
-userSchema.plugin(AutoIncrement.plugin, {model: 'users', startAt: 1,});
+userSchema.plugin(AutoIncrement.plugin, {model: 'users', startAt: 1});
 
 userSchema.pre('save', function(next) {
     if(this.password) {
@@ -114,6 +156,6 @@ userSchema.pre(/^find/, function (next) {
     next();
 })
 
-const userModule = mongoose.model("users", userSchema);
+const userModel = mongoose.model("users", userSchema);
 
-module.exports = userModule;
+module.exports = userModel;
