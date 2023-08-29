@@ -33,11 +33,11 @@ const categorySchema = mongoose.Schema(
         }
     },
     {
-        timestamps: true,
+        timestamps: true
     }
 )
 
-categorySchema.plugin(AutoIncrement.plugin, {model: 'categories', startAt: 1,});
+categorySchema.plugin(AutoIncrement.plugin, {model: 'categories', startAt: 1});
 
 //Set value to slug property before adding new category to the database
 categorySchema.pre('save', function(next) {
@@ -53,6 +53,6 @@ categorySchema.pre('findOneAndUpdate', function(next) {
     next();
 });  
 
-const categoryModule = mongoose.model("categories", categorySchema);
+const categoryModel = mongoose.model("categories", categorySchema);
 
-module.exports = categoryModule;
+module.exports = categoryModel;

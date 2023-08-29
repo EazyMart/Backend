@@ -4,18 +4,18 @@ const {getAllReviews, getReviewById, addReview, updateReview, deleteReview} = re
 const {idValidation} = require("../Middlewares/Validations/idValidation");
 const {addParentIdFromParamToRequestBody, addParentIdFromParamToRequestQuery, addLoginUserIdToRequestBody} = require("../Shared/addToRequestBody");
 const {addReviewValidation, updateReviewValidation} = require("../Middlewares/Validations/reviewValidation");
-const {authontication, authorization, allowClientRole} = require("../Middlewares/authoMiddleware");
+const {authontication, authorization, allowClientRoleOnly} = require("../Middlewares/authoMiddleware");
 
 const router = express.Router({mergeParams: true});
 
 router.route("/")
     .get(addParentIdFromParamToRequestQuery("product", "productId"), getAllReviews)
-    .post(authontication, authorization("reviews"), allowClientRole, addParentIdFromParamToRequestBody("product", "productId"), addLoginUserIdToRequestBody, addReviewValidation, addReview)
+    .post(authontication, authorization("reviews"), allowClientRoleOnly, addParentIdFromParamToRequestBody("product", "productId"), addLoginUserIdToRequestBody, addReviewValidation, addReview)
 
 router.route("/:id")
     .all(idValidation)
     .get(getReviewById)
-    .patch(authontication, authorization("reviews"), allowClientRole, updateReviewValidation, updateReview)
+    .patch(authontication, authorization("reviews"), allowClientRoleOnly, updateReviewValidation, updateReview)
     .delete(authontication, authorization("reviews"), deleteReview)
 
 

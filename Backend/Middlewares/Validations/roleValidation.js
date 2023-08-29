@@ -1,7 +1,7 @@
 const {check} = require("express-validator");
 const errorValidator = require("../errorValidator");
 
-const validModels = ['categories', 'subcategories', 'brands', 'products', 'roles', 'users'];
+const validModels = ['categories', 'subcategories', 'brands', 'products', 'roles', 'wishlists', 'coupons', 'orders', 'reviews', 'users'];
 const validPermissions = ['get', 'post', 'patch', 'put', 'delete'];
 
 exports.addRoleValidation = [

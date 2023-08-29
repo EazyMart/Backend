@@ -53,6 +53,6 @@ brandSchema.pre('findOneAndUpdate', function(next) {
     next();
 });  
 
-const brandModule = mongoose.model("brands", brandSchema);
+const brandModel = mongoose.model("brands", brandSchema);
 
-module.exports = brandModule;
+module.exports = brandModel;

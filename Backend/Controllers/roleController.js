@@ -1,29 +1,29 @@
 const roleModel = require("../Models/roleModel")
 const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./baseController");
 
-// @desc    Create All Categories
-// @route   GET /role
+// @desc    Get All Roles
+// @route   GET /api/v1/role
 // @access  Private
 const searchFields = ['name'];
 exports.getAllRoles = getAllDocuments(roleModel, 'Roles', ...searchFields);
 
-// @desc    Create role by ID
-// @route   GET /role/:id
+// @desc    Get role by ID
+// @route   GET /api/v1/role/:id
 // @access  Private
-exports.getroleById = getDocumentById(roleModel, 'Role');
+exports.getRoleById = getDocumentById(roleModel, 'Role');
 
 // @desc    Create role
-// @route   POST /role
+// @route   POST /api/v1/role
 // @access  Private
-exports.addrole = addDocument(roleModel, 'Role');
+exports.addRole = addDocument(roleModel, 'Role');
 
 // @desc    Update role
-// @route   PATCH /role/:id
+// @route   PATCH /api/v1/role/:id
 // @access  Private
-const properties = ["name", "allowedModels", "available", "deleted"];
-exports.updaterole = updateDocument(roleModel, 'Role', ...properties);
+const feildsThatAllowToUpdate = ["name", "allowedModels", "available", "deleted"];
+exports.updateRole = updateDocument(roleModel, 'Role', ...feildsThatAllowToUpdate);
 
 // @desc    Delete role
-// @route   DELETE /role/:id
+// @route   DELETE /api/v1/role/:id
 // @access  Private
-exports.deleterole = softDeleteDocument(roleModel, 'Role');
+exports.deleteRole = softDeleteDocument(roleModel, 'Role');

@@ -1,29 +1,29 @@
 const productModel = require("../Models/productModel")
 const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./baseController");
 
-// @desc    Create All Products
+// @desc    Get All Products
 // @route   GET /product
 // @access  Public
 const searchFields = ['title', 'description'];
 exports.getAllProducts = getAllDocuments(productModel, 'Products', ...searchFields);
 
-// @desc    Create Product by ID
-// @route   GET /Product/:id
+// @desc    Get Product by ID
+// @route   GET /api/v1/Product/:id
 // @access  Public
 exports.getProductById = getDocumentById(productModel, 'Product');
 
 // @desc    Create Product
-// @route   POST /Product
+// @route   POST /api/v1/Product
 // @access  Private
 exports.addProduct = addDocument(productModel, 'Product');
 
 // @desc    Update Product
-// @route   PATCH /Product/:id
+// @route   PATCH /api/v1/Product/:id
 // @access  Private
-const properties = ["title", "description", "quantity", "sold", "price", "discount", "colors", "imageCover", "images", "ratingsAverage", "ratingsQuantity", "category", "subCategories", "brand", "available", "deleted"];
-exports.updateProduct = updateDocument(productModel, 'Product', ...properties);
+const feildsThatAllowToUpdate = ["title", "description", "quantity", "sold", "price", "discount", "colors", "imageCover", "images", "ratingsAverage", "ratingsQuantity", "category", "subCategories", "brand", "available", "deleted"];
+exports.updateProduct = updateDocument(productModel, 'Product', ...feildsThatAllowToUpdate);
 
 // @desc    Delete Product
-// @route   DELETE /Product/:id
+// @route   DELETE /api/v1/Product/:id
 // @access  Private
 exports.deleteProduct = softDeleteDocument(productModel, 'Product');

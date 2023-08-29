@@ -9,29 +9,29 @@ exports.addLoginUserIdToRequestBody = (request, response, next) => {
     next();
 }
 
-// @desc    Create All Reviews
+// @desc    Get All Reviews
 // @route   GET /Review
 // @access  Public
 const searchFields = ['comment', 'rating', 'product', 'user'];
 exports.getAllReviews = getAllDocuments(reviewModel, 'Reviews', ...searchFields);
 
-// @desc    Create Review by ID
-// @route   GET /Review/:id
+// @desc    Get Review by ID
+// @route   GET /api/v1/Review/:id
 // @access  Public
 exports.getReviewById = getDocumentById(reviewModel, 'Review');
 
 // @desc    Create Review
-// @route   POST /Review
+// @route   POST /api/v1/Review
 // @access  Private
 exports.addReview = addDocument(reviewModel, 'Review');
 
 // @desc    Update Review
-// @route   PATCH /Review/:id
+// @route   PATCH /api/v1/Review/:id
 // @access  Private
-const properties = ['comment', 'rating', 'available', 'deleted']; //No update for user id or product id
-exports.updateReview = updateDocument(reviewModel, 'Review', ...properties);
+const feildsThatAllowToUpdate = ['comment', 'rating', 'available', 'deleted']; //No update for user id or product id
+exports.updateReview = updateDocument(reviewModel, 'Review', ...feildsThatAllowToUpdate);
 
 // @desc    Delete Review
-// @route   DELETE /Review/:id
+// @route   DELETE /api/v1/Review/:id
 // @access  Private
 exports.deleteReview = hardDeleteDocument(reviewModel, 'Review');

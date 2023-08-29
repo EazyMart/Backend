@@ -1,29 +1,29 @@
 const subCategoryModel = require("../Models/subCategoryModel")
 const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./baseController");
 
-// @desc    Create All SubCategories for specific category
-// @route   GET /subcategory
+// @desc    Get All SubCategories for specific category
+// @route   GET /api/v1/subcategory
 // @access  Public
 const searchFields = ['name'];
 exports.getAllSubCategories = getAllDocuments(subCategoryModel, 'Subcategories', ...searchFields);
 
-// @desc    Create Category by ID
-// @route   GET /Category/:id
+// @desc    Get Category by ID
+// @route   GET /api/v1/Category/:id
 // @access  Public
 exports.getSubCategoryById = getDocumentById(subCategoryModel, 'Subcategory');
 
 // @desc    Create SubCategory
-// @route   POST /subcategory
+// @route   POST /api/v1/subcategory
 // @access  Private
 exports.addSubCategory = addDocument(subCategoryModel, 'Subcategory');
 
 // @desc    Update SubCategory
-// @route   PATCH /subcategory/:id
+// @route   PATCH /api/v1/subcategory/:id
 // @access  Private
-const properties = ["name", "image", "category", "available", "deleted"];
-exports.updateSubCategory = updateDocument(subCategoryModel, 'SubCategory', ...properties);
+const feildsThatAllowToUpdate = ["name", "image", "category", "available", "deleted"];
+exports.updateSubCategory = updateDocument(subCategoryModel, 'SubCategory', ...feildsThatAllowToUpdate);
 
 // @desc    Delete SubCategory
-// @route   DELETE /subcategory/:id
+// @route   DELETE /api/v1/subcategory/:id
 // @access  Private
 exports.deleteSubCategory = softDeleteDocument(subCategoryModel, 'SubCategory');

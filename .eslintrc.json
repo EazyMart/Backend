@@ -13,8 +13,13 @@
     "no-return-await": "off",
     "no-underscore-dangle": "off",
     "class-methods-use-this": "off",
+    "no-await-in-loop": "off",
     "no-undef": "error",
-    "prefer-destructuring": ["warn", { "object": true, "array": false }],
+    "new-cap":"off",
+    "no-restricted-syntax": "off",
+    "no-plusplus": "off",
+    "array-callback-return": "off",
+    "prefer-destructuring": ["off", { "object": true, "array": false }],
     "no-unused-vars": ["warn", { "argsIgnorePattern": "req|res|next|val" }]
     }
 }

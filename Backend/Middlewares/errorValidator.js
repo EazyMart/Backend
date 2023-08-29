@@ -1,11 +1,12 @@
 const { validationResult } = require('express-validator');
-const CreateResponse = require("../ResponseObject/responseObject")
+const APIError = require("../Helper/APIError");
+const globalError = require("./errorMiddleware")
 
 // @desc  Finds the validation errors in this request and wraps them in an object with handy functions
 const errorValidator = (request, response, next) => {
     const errors = validationResult(request);
     if (!errors.isEmpty()) {
-        response.status(400).json(CreateResponse(false, errors.errors[0].msg));
+        globalError(new APIError(errors.errors[0].msg, 400), request, response, next);        
         return;
     }
     next();

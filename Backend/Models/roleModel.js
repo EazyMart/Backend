@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
 const AutoIncrement = require('../Config/autoIncrementInitialization')
-require("dotenv").config({path: "config.env"});
 
 const allowedModelSchema = new mongoose.Schema(
     {
@@ -9,7 +8,7 @@ const allowedModelSchema = new mongoose.Schema(
             type: String,
             required: [true, "Any role must have one controlled model at least"],
             lowercase: true,
-            enum: ['categories', 'subcategories', 'brands', 'products', 'roles', 'users']
+            enum: ['categories', 'subcategories', 'brands', 'products', 'roles', 'wishlists', 'coupons', 'orders', 'reviews', 'users']
         },
         permissions: [{
             type: String,
@@ -18,7 +17,9 @@ const allowedModelSchema = new mongoose.Schema(
             enum: ['get', 'post', 'patch', 'put', 'delete']
         }],
     },
-    {_id: false}
+    {
+        _id: false
+    }
 );
 
 const roleSchema = mongoose.Schema(
@@ -67,6 +68,6 @@ roleSchema.pre('findOneAndUpdate', function(next) {
     next();
 });   
 
-const roleModule = mongoose.model("roles", roleSchema);
+const roleModel = mongoose.model("roles", roleSchema);
 
-module.exports = roleModule;
+module.exports = roleModel;

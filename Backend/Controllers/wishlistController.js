@@ -14,26 +14,18 @@ exports.iSWishlistBelongsToTheCurrentUser = asyncHandler(async (request, respons
     next();
 });
 
-// @desc    Check If The Wishlist Belongs To The Current User
-// @route   No
-// @access  No
-exports.AddUserIdFromRequestParamsToRequestQuery = asyncHandler(async (request, response, next) => {
-    request.query.user = +request.params.userId;
-    next();
-});
-
-// @desc    Create All Wishlists
-// @route   GET /Wishlist
+// @desc    Get All Wishlists
+// @route   GET /api/v1/user/:userId/wishlist
 // @access  Private
 const searchFields = ['product', 'user'];
 exports.getAllWishlists = getAllDocuments(wishlistModel, 'Wishlists', ...searchFields);
 
 // @desc    Create Wishlist
-// @route   POST /Wishlist
+// @route   POST /api/v1/user/:userId/wishlist
 // @access  Private
 exports.addWishlist = addDocument(wishlistModel, 'Wishlist');
 
 // @desc    Delete Wishlist
-// @route   DELETE /Wishlist/:id
+// @route   DELETE /api/v1/user/:userId/wishlist/:id
 // @access  Private
 exports.deleteWishlist = hardDeleteDocument(wishlistModel, 'Wishlist');

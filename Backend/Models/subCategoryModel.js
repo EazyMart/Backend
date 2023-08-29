@@ -67,6 +67,6 @@ subCategorySchema.pre(/^find/, function (next) {
     next();
 })
 
-const subCategoryModule = mongoose.model("subCategories", subCategorySchema);
+const subCategoryModel = mongoose.model("subCategories", subCategorySchema);
 
-module.exports = subCategoryModule;
+module.exports = subCategoryModel;

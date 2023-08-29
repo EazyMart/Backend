@@ -14,7 +14,7 @@ const {sendEmail} = require("../Helper/sendEmail")
 exports.signup = addDocument(userModel, 'User');
 
 // @desc    Login
-// @route   POST /auth/login
+// @route   POST /api/v1/auth/login
 // @access  Public
 exports.login = asyncHandler(async (request, response, next) => {        
     const user = await userModel.findOne({email: request.body.email}, {__v: 0, createdAt: 0, updatedAt: 0});
@@ -48,7 +48,7 @@ exports.login = asyncHandler(async (request, response, next) => {
 })
 
 // @desc    Forget Password
-// @route   POST /auth/forgetpassword
+// @route   POST /api/v1/auth/forgetpassword
 // @access  Public
 exports.forgetPassword = asyncHandler(async (request, response, next) => {
     const user = await userModel.findOne({ email: request.body.email });
@@ -83,7 +83,7 @@ exports.forgetPassword = asyncHandler(async (request, response, next) => {
 })
 
 // @desc    Verify Reset Password Code
-// @route   POST /auth/verifyresetpasswordcode
+// @route   POST /api/v1/auth/verifyresetpasswordcode
 // @access  Public
 exports.verifyResetPasswordCode = asyncHandler(async (request, response, next) => {
     const user = await userModel.findOne({email: request.body.email}, {email: 1, resetPasswordCode: 1})
@@ -105,7 +105,7 @@ exports.verifyResetPasswordCode = asyncHandler(async (request, response, next) =
 })
 
 // @desc    Verify Reset Password
-// @route   POST /auth/resetpassword
+// @route   POST /api/v1/auth/resetpassword
 // @access  Public
 exports.resetPassword = asyncHandler(async (request, response, next) => {
     const user = await userModel.findOne({email: request.body.email}, {email: 1, resetPasswordCode: 1})

@@ -4,8 +4,8 @@ const CreateResponse = require("../ResponseObject/responseObject");
 const APIError = require("../Helper/APIError");
 const userModel = require("../Models/userModel");
 
-// @desc    Create All User Addresses
-// @route   GET /user/:userId/addresses
+// @desc    Get All User Addresses
+// @route   GET /api/v1/user/:userId/addresses
 // @access  Private
 exports.getAllUserAddressByUserId = asyncHandler(async (request, response, next) => {
     const user = await userModel.findById({_id: request.params.userId}, {addresses: 1});
@@ -17,7 +17,7 @@ exports.getAllUserAddressByUserId = asyncHandler(async (request, response, next)
 })
 
 // @desc    Get specific Address for User by ID
-// @route   GET /user/:id
+// @route   GET /api/v1/user/:id
 // @access  Public
 exports.getUserAddressById = asyncHandler(async (request, response, next) => {
     const user = await userModel.findById({_id: request.params.userId}, {addresses: 1});
@@ -30,7 +30,7 @@ exports.getUserAddressById = asyncHandler(async (request, response, next) => {
 })
 
 // @desc    Add Address for specific user
-// @route   POST /User/:userId/address
+// @route   POST /api/v1/User/:userId/address
 // @access  Private
 exports.addUserAddress = asyncHandler(async (request, response, next) => {
     const user = await userModel.findById(request.params.userId, {addresses: 1});
@@ -57,7 +57,7 @@ exports.addUserAddress = asyncHandler(async (request, response, next) => {
 })
 
 // @desc    Update Specific Address For Specific User
-// @route   PATCH /user/:userId/address/id
+// @route   PATCH /api/v1/user/:userId/address/id
 // @access  Private
 exports.updateUserAddress = asyncHandler(async (request, response, next) => {
     const user = await userModel.findById(request.params.userId, {addresses: 1});
@@ -84,7 +84,7 @@ exports.updateUserAddress = asyncHandler(async (request, response, next) => {
 })
 
 // @desc    Delete Specific Address For Specific User
-// @route   DELETE /user/:userId/address/id
+// @route   DELETE /api/v1/user/:userId/address/id
 // @access  Private
 exports.deleteUserAddress = asyncHandler(async (request, response, next) => {
     const user = await userModel.findById({_id: request.params.userId}, {addresses: 1});

@@ -5,40 +5,40 @@ const APIError = require("../Helper/APIError");
 const userModel = require("../Models/userModel");
 const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./baseController");
 
-// @desc    Create All users
-// @route   GET /user
+// @desc    Get All users
+// @route   GET /api/v1/user
 // @access  Public
 const searchFields = ["firstName", "lastName", "email", "mobilePhone", "role"];
 exports.getAllUsers = getAllDocuments(userModel, 'Users', ...searchFields);
 
-// @desc    Create User by ID
-// @route   GET /user/:id
+// @desc    Get User by ID
+// @route   GET /api/v1/user/:id
 // @access  Public
 exports.getUserById = getDocumentById(userModel, 'User');
 
 // @desc    Signup
-// @route   POST /User
+// @route   POST /api/v1/User
 // @access  Public
 exports.addUser = addDocument(userModel, 'User');
 
 // @desc    Update User
-// @route   PATCH /user/:id
+// @route   PATCH /api/v1/user/:id
 // @access  Private
-const properties = ["firstName", "lastName", "profileImage", "mobilePhone", "available"];
-exports.updateUser = updateDocument(userModel, 'User', ...properties);
+const feildsThatAllowToUpdate = ["firstName", "lastName", "profileImage", "mobilePhone", "available"];
+exports.updateUser = updateDocument(userModel, 'User', ...feildsThatAllowToUpdate);
 
 // @desc    Update User
-// @route   PATCH /user/:id/role
+// @route   PATCH /api/v1/user/:id/role
 // @access  Private
 exports.updateUserRole = updateDocument(userModel, 'User', "role");
 
 // @desc    Block User
-// @route   PATCH /user/:id
+// @route   PATCH /api/v1/user/:id
 // @access  Private
 exports.blockUser = updateDocument(userModel, 'User', "blocked");
 
 // @desc    Change Email
-// @route   PATCH /user/:id/changeemail
+// @route   PATCH /api/v1/user/:id/changeemail
 // @access  Private
 exports.changeEmail = asyncHandler(async (request, response, next) => {
     const user = await userModel.findOne({email: request.body.currentEmail});
@@ -52,7 +52,7 @@ exports.changeEmail = asyncHandler(async (request, response, next) => {
 })
 
 // @desc    Change Password
-// @route   PATCH /user/:id/changepassword
+// @route   PATCH /api/v1/user/:id/changepassword
 // @access  Private
 exports.changePassword = asyncHandler(async (request, response, next) => {
     const user = await userModel.findOne({email: request.body.email});
@@ -67,6 +67,6 @@ exports.changePassword = asyncHandler(async (request, response, next) => {
 })
 
 // @desc    Delete User
-// @route   DELETE /user/:id
+// @route   DELETE /api/v1/user/:id
 // @access  Private
 exports.deleteUser = softDeleteDocument(userModel, 'User');

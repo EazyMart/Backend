@@ -45,7 +45,7 @@ const preventClientRole = asyncHandler(async (request, response, next) => {
     next();
 });
 
-const allowClientRole = asyncHandler(async (request, response, next) => { 
+const allowClientRoleOnly = asyncHandler(async (request, response, next) => { 
     if(request.user.role.name.toLowerCase() !== "client") {
         throw new APIError('The clients only can add new item on this route', 403);
     }
@@ -59,4 +59,4 @@ const checkParamIdEqualTokenId = (userId = 'id') => asyncHandler(async (request,
     next();
 });
 
-module.exports = {authontication, authorization, preventClientRole, allowClientRole, checkParamIdEqualTokenId};
+module.exports = {authontication, authorization, preventClientRole, allowClientRoleOnly, checkParamIdEqualTokenId};

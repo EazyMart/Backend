@@ -89,7 +89,7 @@ const productSchema = mongoose.Schema(
     {
         timestamps: true,
         toJSON: {virtuals: true},
-        id: false //Disable automatic 'id' generation   
+        id: false
     }
 )
 
@@ -102,13 +102,11 @@ productSchema.virtual("reviews", {
 
 productSchema.plugin(AutoIncrement.plugin, {model: 'products', startAt: 1});
 
-//Set value to slug property before adding new category to the database
 productSchema.pre('save', function(next) {
     this.slug = slugify(this.title);
     next();
 });
 
-//update value of slug property when the title is updated
 productSchema.pre('findOneAndUpdate', function(next) {
     if(this._update.title) {
         this._update.slug = slugify(this._update.title);
@@ -116,8 +114,7 @@ productSchema.pre('findOneAndUpdate', function(next) {
     next();
 });  
 
-//To populate with each find query
-productSchema.pre(/^find/, function (next) {
+productSchema.pre('findById', function (next) {
     const populateFields = [
         {
             path: 'category',
@@ -138,6 +135,6 @@ productSchema.pre(/^find/, function (next) {
     next();
 })
 
-const productModule = mongoose.model("products", productSchema);
+const productModel = mongoose.model("products", productSchema);
 
-module.exports = productModule;
+module.exports = productModel;

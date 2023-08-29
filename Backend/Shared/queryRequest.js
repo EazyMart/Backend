@@ -32,7 +32,8 @@ const filter = (request, ...searchFields) => {
 	return filteredFields;
 }
 
-const select = (request) =>  request.query.select ? `${request.query.select.split(',').join(" ")} -__v` : "-__v";
+// const select = (request) =>  request.query.select ? `${request.query.select.split(',').join(" ")} -__v` : "-__v";
+const select = (request) =>  request.query.select ? request.query.select.split(',') : '-__v';
 
 const sort = (request) => request.query.sort ? request.query.sort.split(',').join(" ") : "-createdAt";
 

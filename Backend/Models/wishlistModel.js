@@ -51,6 +51,6 @@ wishlistSchema.post('find', (docs, next) => {
     next();
 });
 
-const wishlistModule = mongoose.model("wishlists", wishlistSchema);
+const wishlistModel = mongoose.model("wishlists", wishlistSchema);
 
-module.exports = wishlistModule;
+module.exports = wishlistModel;

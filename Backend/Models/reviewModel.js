@@ -96,7 +96,7 @@ reviewSchema.post('save' || 'findOneAndDelete', async function () {
     await this.constructor.calcAverageRatingsAndQuantity(this.product);
 });
 
-const reviewModule = mongoose.model("reviews", reviewSchema);
+const reviewModel = mongoose.model("reviews", reviewSchema);
 
 
-module.exports = reviewModule;
+module.exports = reviewModel;
