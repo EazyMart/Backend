@@ -10,6 +10,12 @@ const globalError = require("./Middlewares/errorMiddleware")
 const dbConnection = require("./Config/database")
 const mountRoutes = require("./mountRoutes");
 
+if (!String.prototype.replaceAll) {
+    String.prototype.replaceAll = function (search, replacement) {
+        return this.split(search).join(replacement);
+    };
+}
+
 //Start The App
 const app = express();
 
