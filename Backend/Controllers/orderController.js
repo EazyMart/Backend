@@ -1,3 +1,4 @@
+const stripe = require('stripe')(process.env.Stipe_Secret_Key);
 const mongoose = require('mongoose');
 const asyncHandler = require('express-async-handler');
 const APIError = require('../Helper/APIError');
@@ -65,7 +66,24 @@ exports.addOrder = asyncHandler(async (request, response, next) => {
             }
         }
     }
-})
+});
+
+// @desc    Create Order
+// @route   POST /api/v1/order/online
+// @access  Private
+exports.addOrderOnline = asyncHandler(async (request, response) => {
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: 10000000,
+        currency: "usd",
+        automatic_payment_methods: {
+            enabled: true,
+        }
+    });
+
+    response.send({
+        clientSecret: paymentIntent.client_secret,
+    });
+});
 
 // @desc    Create Order by Admin
 // @route   POST /api/v1/order

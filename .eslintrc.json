@@ -18,6 +18,7 @@
     "new-cap":"off",
     "no-restricted-syntax": "off",
     "no-plusplus": "off",
+    "import/no-extraneous-dependencies": "off",
     "array-callback-return": "off",
     "prefer-destructuring": ["off", { "object": true, "array": false }],
     "no-unused-vars": ["warn", { "argsIgnorePattern": "req|res|next|val" }]

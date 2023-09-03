@@ -8,12 +8,12 @@ exports.getAllDocuments = (model, modelName = 'Items', ...searchFields) =>
     asyncHandler(async (request, response) => {
         const filtedFields = filter(request, ...searchFields);
         const {page, limit, skip, totalPages} = await pagination(request, await model.countDocuments(filtedFields));
-        const AllProducts = await model.find(filtedFields, select(request)).skip(skip).limit(limit).sort(sort(request));
-        if(AllProducts.length > 0) {
-            response.status(200).json(CreateResponse(true, `All ${modelName} are retrieved successfully`, AllProducts, page, limit, totalPages));
+        const AllDocuments = await model.find(filtedFields, select(request)).skip(skip).limit(limit).sort(sort(request));
+        if(AllDocuments.length > 0) {
+            response.status(200).json(CreateResponse(true, `All ${modelName} are retrieved successfully`, AllDocuments, page, limit, totalPages));
         }
         else {
-            response.status(200).json(CreateResponse(true, `Empty, No ${modelName} to show`, AllProducts, page, limit, totalPages));
+            response.status(200).json(CreateResponse(true, `Empty, No ${modelName} to show`, AllDocuments, page, limit, totalPages));
         }
 })
 
