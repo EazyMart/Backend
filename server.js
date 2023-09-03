@@ -1,5 +1,4 @@
 const fs = require('fs');
-// eslint-disable-next-line import/no-extraneous-dependencies
 const compression = require('express-compression')
 const express = require("express");
 const morgan = require("morgan");
