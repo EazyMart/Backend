@@ -1,14 +1,13 @@
 {
-  "name": "backend",
+  "name": "eazmart",
   "version": "1.0.0",
-  "description": "",
+  "description": "EazyMart is an online electronic commerce system",
   "main": "server.js",
   "scripts": {
-    "start-development": "nodemon server.js",
-    "start-production": "set NODE_ENV=production && node server.js"
+    "start": "node server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Tarek Eslam",
   "license": "ISC",
   "dependencies": {
     "@alec016/mongoose-autoincrement": "^1.5.1",
@@ -30,8 +29,8 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "morgan": "^1.10.0",
     "flag": "^5.0.1",
+    "morgan": "^1.10.0",
     "nodemon": "^3.0.1"
   }
 }
