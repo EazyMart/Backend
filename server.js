@@ -8,6 +8,12 @@ const globalErrorHandler = require("./ErrorHandler/globalErrorHandler")
 const routesMounting = require("./routesMounting");
 const notFoundRoutesHandler = require("./ErrorHandler/notFoundRoutesHandler")
 
+if (!String.prototype.replaceAll) {
+    String.prototype.replaceAll = function (search, replacement) {
+        return this.split(search).join(replacement);
+    };
+};
+
 const app = express();
 const port = process.env.Port || 8000;
 let server = app.listen();
