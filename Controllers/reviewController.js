@@ -1,5 +1,5 @@
 const reviewModel = require("../Models/reviewModel")
-const {getAllDocuments, getDocumentById, addDocument, updateDocument, hardDeleteDocument} = require("./baseController");
+const {getAllDocuments, getDocumentById, addDocument, updateDocument, hardDeleteDocument} = require("./Base/baseController");
 
 // @desc    Add user Id to request body
 // @route   No

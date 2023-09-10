@@ -2,10 +2,10 @@ const express = require("express");
 
 const router = express.Router();
 const {getAllBrands, getBrandById, addBrand, updateBrand, deleteBrand} = require("../Controllers/brandController");
-const {idValidation} = require("../Middlewares/Validations/idValidation")
-const {addBrandValidation, updateBrandValidation} = require("../Middlewares/Validations/brandValidation")
+const {idValidation} = require("../Middlewares/idValidation")
+const {addBrandValidation, updateBrandValidation} = require("../Middlewares/brandValidation")
 const {uploadImageList, toFirebase} = require("../uploadFiles/uploadImage");
-const {authontication, authorization} = require("../Middlewares/authoMiddleware");
+const {authontication, authorization} = require("../Services/authService");
 
 const uploadFiles = [{name: "image", maxCount: 1}];
 

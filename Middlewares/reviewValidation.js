@@ -1,7 +1,7 @@
 const {param, check} = require("express-validator");
-const errorValidator = require("../errorValidator");
-const productModel = require("../../Models/productModel");
-const reviewModel = require("../../Models/reviewModel");
+const errorExpressValidatorHandler = require("../ErrorHandler/errorExpressValidatorHandler");
+const productModel = require("../Models/productModel");
+const reviewModel = require("../Models/reviewModel");
 
 exports.addReviewValidation = [
 	check("comment")
@@ -38,7 +38,7 @@ exports.addReviewValidation = [
 			return true;
 		}),
 
-	errorValidator
+	errorExpressValidatorHandler
 ]
 
 exports.updateReviewValidation = [
@@ -66,5 +66,5 @@ exports.updateReviewValidation = [
 		.toFloat()
 		.isFloat({ min: 1, max: 5 }).withMessage("Rating average must be between 1.0 and 5.0"),
 	
-	errorValidator
+	errorExpressValidatorHandler
 ]

@@ -2,10 +2,10 @@ const express = require("express");
 
 const router = express.Router();
 const {getAllUsers, getUserById, addUser, updateUser, updateUserRole, blockUser, changeEmail, changePassword, deleteUser} = require("../Controllers/userController");
-const {idValidation} = require("../Middlewares/Validations/idValidation")
-const {addUserValidation, updateUserValidation, changeEmailValidation, changePasswordValidation} = require("../Middlewares/Validations/userValidation")
+const {idValidation} = require("../Middlewares/idValidation")
+const {addUserValidation, updateUserValidation, changeEmailValidation, changePasswordValidation} = require("../Middlewares/userValidation")
 const {uploadImageList, toFirebase} = require("../uploadFiles/uploadImage");
-const {authontication, authorization, preventClientRole, checkParamIdEqualTokenId} = require("../Middlewares/authoMiddleware");
+const {authontication, authorization, preventClientRole, checkParamIdEqualTokenId} = require("../Services/authService");
 const wishlistRoute = require("./wishlistRoute");
 const addressRoute = require("./addressRoute");
 

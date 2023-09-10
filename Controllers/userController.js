@@ -1,9 +1,9 @@
 const bcrypt = require("bcrypt");
 const asyncHandler = require("express-async-handler");
-const CreateResponse = require("../ResponseObject/responseObject");
-const APIError = require("../Helper/APIError");
+const responseFormatter = require("../ResponseFormatter/responseFormatter");
+const APIError = require("../ErrorHandler/APIError");
 const userModel = require("../Models/userModel");
-const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./baseController");
+const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./Base/baseController");
 
 // @desc    Get All users
 // @route   GET /api/v1/user
@@ -45,7 +45,7 @@ exports.changeEmail = asyncHandler(async (request, response, next) => {
     if(user && await bcrypt.compare(request.body.password, user.password)) {
         user.password = request.body.newEmail;
         await user.save();
-        response.status(200).json(CreateResponse(true, 'Your Email is updated successfully, please login again.')); // generate token and send it
+        response.status(200).json(responseFormatter(true, 'Your Email is updated successfully, please login again.')); // generate token and send it
         return;
     }
     next(new APIError('Your email or password may be incorrect', 401));
@@ -60,7 +60,7 @@ exports.changePassword = asyncHandler(async (request, response, next) => {
         user.password = request.body.newPassword;
         user.passwordUpdatedTime = Date.now();
         await user.save();
-        response.status(200).json(CreateResponse(true, 'Your Password is updated successfully, please login again.')); // generate token and send it
+        response.status(200).json(responseFormatter(true, 'Your Password is updated successfully, please login again.')); // generate token and send it
         return;
     }
     next(new APIError('Your email or password may be incorrect', 401));

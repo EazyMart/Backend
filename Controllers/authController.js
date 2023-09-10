@@ -1,12 +1,11 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-require("dotenv").config({path: "config.env"});
-const APIError = require("../Helper/APIError");
-const CreateResponse = require("../ResponseObject/responseObject");
+const APIError = require("../ErrorHandler/APIError");
+const responseFormatter = require("../ResponseFormatter/responseFormatter");
 const userModel = require("../Models/userModel");
-const {addDocument} = require("./baseController");
-const {sendEmail} = require("../Helper/sendEmail")
+const {addDocument} = require("./Base/baseController");
+const {sendEmail} = require("../Services/sendEmailService")
 
 // @desc    Signup
 // @route   POST /auth/signup
@@ -32,7 +31,7 @@ exports.login = asyncHandler(async (request, response, next) => {
             await user.save();
         }
         const token = jwt.sign({id: user._id, role: user.role}, process.env.Secret_Key, {expiresIn: process.env.Expiration_Time});
-        response.status(200).json(CreateResponse(true, 'Login successfully', [
+        response.status(200).json(responseFormatter(true, 'Login successfully', [
             {
                 user: {
                     _id: user._id,
@@ -79,7 +78,7 @@ exports.forgetPassword = asyncHandler(async (request, response, next) => {
             return;
         }
     }
-    response.status(200).json(CreateResponse(true, 'If your email is found, you will receive a reset code to reset your password'));
+    response.status(200).json(responseFormatter(true, 'If your email is found, you will receive a reset code to reset your password'));
 })
 
 // @desc    Verify Reset Password Code
@@ -93,7 +92,7 @@ exports.verifyResetPasswordCode = asyncHandler(async (request, response, next) =
                 if(user.resetPasswordCode.isVerified === false) {
                     user.resetPasswordCode.isVerified = true;
                     await user.save();
-                    response.status(200).json(CreateResponse(true, 'Your code is verified'));
+                    response.status(200).json(responseFormatter(true, 'Your code is verified'));
                     return;
                 }
                 throw new APIError("This code is already used before, try to ask another code", 400);
@@ -119,7 +118,7 @@ exports.resetPassword = asyncHandler(async (request, response, next) => {
                     isVerified: undefined,
                 }
                 await user.save();
-                response.status(200).json(CreateResponse(true, 'Your password is reset successfully'));
+                response.status(200).json(responseFormatter(true, 'Your password is reset successfully'));
                 return;
             }
             throw new APIError("This code is already used before, try to ask another code", 400);

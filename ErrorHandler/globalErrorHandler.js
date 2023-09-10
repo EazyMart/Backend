@@ -11,7 +11,7 @@ const sendErrorForProd = (error, response) => response.status(error.statusCode).
     })
 
 
-const globalError = (error, request, response, next) => {
+const globalErrorHandler = (error, request, response, next) => {
     error.statusCode = error.statusCode || 500;
     error.status = error.status || 'error';
 
@@ -23,4 +23,4 @@ const globalError = (error, request, response, next) => {
     }
 }
 
-module.exports = globalError;
+module.exports = globalErrorHandler;

@@ -1,6 +1,6 @@
 const {check} = require("express-validator");
-const errorValidator = require("../errorValidator");
-const roleModel = require("../../Models/roleModel");
+const errorExpressValidatorHandler = require("../ErrorHandler/errorExpressValidatorHandler");
+const roleModel = require("../Models/roleModel");
 
 exports.signupValidation = [
 	check("firstName")
@@ -44,7 +44,7 @@ exports.signupValidation = [
 			throw new Error(`This role doesn't exist`);
 		}),
 
-    errorValidator
+	errorExpressValidatorHandler
 ]
 
 exports.loginValidation = [
@@ -55,7 +55,7 @@ exports.loginValidation = [
     check("password")
 		.notEmpty().withMessage("Password is required"),
 
-    errorValidator
+	errorExpressValidatorHandler
 ]
 
 exports.forgetPasswordValidation = [
@@ -63,7 +63,7 @@ exports.forgetPasswordValidation = [
 		.notEmpty().withMessage("Email is required")
 		.matches(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/).withMessage("Invalid email"),
 
-    errorValidator
+	errorExpressValidatorHandler
 ]
 
 exports.verifyResetPasswordCodeValidation = [
@@ -81,7 +81,7 @@ exports.verifyResetPasswordCodeValidation = [
 			return true
 		}),
 
-    errorValidator
+	errorExpressValidatorHandler
 ]
 
 exports.resetPasswordValidation = [
@@ -93,5 +93,5 @@ exports.resetPasswordValidation = [
 		.notEmpty().withMessage("New Password is required")
 		.matches(/^(?=.*[!@#$%^&*()])(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/).withMessage("Password must contain upper, lower characters, numbers and special characters"),
 
-    errorValidator
+	errorExpressValidatorHandler
 ]

@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
-const APIError = require("../Helper/APIError");
+const APIError = require("../ErrorHandler/APIError");
 const wishlistModel = require("../Models/wishlistModel")
-const {getAllDocuments, addDocument, hardDeleteDocument} = require("./baseController");
+const {getAllDocuments, addDocument, hardDeleteDocument} = require("./Base/baseController");
 
 // @desc    Check If The Wishlist Belongs To The Current User
 // @route   No

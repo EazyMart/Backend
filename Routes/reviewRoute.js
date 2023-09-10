@@ -1,10 +1,10 @@
 const express = require("express");
 
 const {getAllReviews, getReviewById, addReview, updateReview, deleteReview} = require("../Controllers/reviewController");
-const {idValidation} = require("../Middlewares/Validations/idValidation");
+const {idValidation} = require("../Middlewares/idValidation");
 const {addParentIdFromParamToRequestBody, addParentIdFromParamToRequestQuery, addLoginUserIdToRequestBody} = require("../Shared/addToRequestBody");
-const {addReviewValidation, updateReviewValidation} = require("../Middlewares/Validations/reviewValidation");
-const {authontication, authorization, allowClientRoleOnly} = require("../Middlewares/authoMiddleware");
+const {addReviewValidation, updateReviewValidation} = require("../Middlewares/reviewValidation");
+const {authontication, authorization, allowClientRoleOnly} = require("../Services/authService");
 
 const router = express.Router({mergeParams: true});
 

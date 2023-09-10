@@ -2,11 +2,11 @@ const express = require("express");
 
 const {addParentIdFromParamToRequestBody, addParentIdFromParamToRequestQuery} = require("../Shared/addToRequestBody");
 const {getAllProducts, getProductById, addProduct, updateProduct, deleteProduct} = require("../Controllers/productController");
-const {idValidation} = require("../Middlewares/Validations/idValidation");
-const {addProductValidation, updateProductValidation} = require("../Middlewares/Validations/productValidation");
+const {idValidation} = require("../Middlewares/idValidation");
+const {addProductValidation, updateProductValidation} = require("../Middlewares/productValidation");
 const reviewRoute = require("./reviewRoute")
 const {uploadImageList, toFirebase} = require("../uploadFiles/uploadImage");
-const {authontication, authorization} = require("../Middlewares/authoMiddleware");
+const {authontication, authorization} = require("../Services/authService");
 
 const router = express.Router({mergeParams: true});
 

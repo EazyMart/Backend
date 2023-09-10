@@ -1,5 +1,5 @@
 const brandModel = require("../Models/brandModel")
-const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./baseController");
+const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./Base/baseController");
 
 // @desc    Create All Brands
 // @route   GET /api/v1/brand

@@ -1,10 +1,10 @@
 const express = require("express");
 
 const router = express.Router({mergeParams: true});
-const {addUserIdToRequestQueryAtClientRole, getAllOrders, addOrder, addOrderOnline} = require("../Controllers/orderController");
-const {idValidation} = require("../Middlewares/Validations/idValidation")
-const {addOrderValidation} = require("../Middlewares/Validations/orderValidation")
-const {authontication, authorization, allowClientRoleOnly} = require("../Middlewares/authoMiddleware");
+const {addUserIdToRequestQueryAtClientRole, getAllOrders, addOrder, addOrderOnline, confirmPayment} = require("../Controllers/orderController");
+const {idValidation} = require("../Middlewares/idValidation")
+const {addOrderValidation} = require("../Middlewares/orderValidation")
+const {authontication, authorization, allowClientRoleOnly} = require("../Services/authService");
 const {addLoginUserIdToRequestBody} = require("../Shared/addToRequestBody");
 
 router.route("/")
@@ -13,7 +13,11 @@ router.route("/")
     .post(allowClientRoleOnly, addLoginUserIdToRequestBody, addOrderValidation, addOrder)
 
 router.route('/online')
-    .post(addOrderOnline)
+    .post(authontication, authorization("orders"), allowClientRoleOnly, addLoginUserIdToRequestBody, addOrderValidation, addOrderOnline)
+
+router.route('/confirm')
+    .post(express.raw({type: 'application/json'}), confirmPayment)
+
 
 // router.route("/:id")
 //     .all(authontication, authorization("orders"), idValidation)

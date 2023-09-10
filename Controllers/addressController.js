@@ -1,7 +1,7 @@
 const slugify = require("slugify");
 const asyncHandler = require("express-async-handler");
-const CreateResponse = require("../ResponseObject/responseObject");
-const APIError = require("../Helper/APIError");
+const responseFormatter = require("../ResponseFormatter/responseFormatter");
+const APIError = require("../ErrorHandler/APIError");
 const userModel = require("../Models/userModel");
 
 // @desc    Get All User Addresses
@@ -10,10 +10,10 @@ const userModel = require("../Models/userModel");
 exports.getAllUserAddressByUserId = asyncHandler(async (request, response, next) => {
     const user = await userModel.findById({_id: request.params.userId}, {addresses: 1});
     if(user.addresses.length === 0) {
-        response.status(200).json(CreateResponse(true, `This user has no addresses`));
+        response.status(200).json(responseFormatter(true, `This user has no addresses`));
         return;
     }
-    response.status(200).json(CreateResponse(true, `The addresses for this user are retrieved successfully`, user.addresses));
+    response.status(200).json(responseFormatter(true, `The addresses for this user are retrieved successfully`, user.addresses));
 })
 
 // @desc    Get specific Address for User by ID
@@ -26,7 +26,7 @@ exports.getUserAddressById = asyncHandler(async (request, response, next) => {
         next(new APIError("This address does not exist for this user", 404));
         return;
     }
-    response.status(200).json(CreateResponse(true, `The address is retrieved successfully`, [user.addresses[targetAddressIndex]]));
+    response.status(200).json(responseFormatter(true, `The address is retrieved successfully`, [user.addresses[targetAddressIndex]]));
 })
 
 // @desc    Add Address for specific user
@@ -49,7 +49,7 @@ exports.addUserAddress = asyncHandler(async (request, response, next) => {
         }
         user.addresses.push(request.body);
         await user.save();
-        response.status(200).json(CreateResponse(true, 'The address is addde successfully', [user.addresses[user.addresses.length - 1]]));
+        response.status(200).json(responseFormatter(true, 'The address is addde successfully', [user.addresses[user.addresses.length - 1]]));
     }
     else {
         next(new APIError("This Address is already in found", 403));
@@ -80,7 +80,7 @@ exports.updateUserAddress = asyncHandler(async (request, response, next) => {
     }
     user.addresses[targetAddressIndex] = request.body;
     await user.save();
-    response.status(200).json(CreateResponse(true, `The address is updated successfully`, [user.addresses[targetAddressIndex]]));
+    response.status(200).json(responseFormatter(true, `The address is updated successfully`, [user.addresses[targetAddressIndex]]));
 })
 
 // @desc    Delete Specific Address For Specific User
@@ -99,5 +99,5 @@ exports.deleteUserAddress = asyncHandler(async (request, response, next) => {
     }
     user.addresses.splice(targetAddressIndex, 1);
     await user.save();
-    response.status(200).json(CreateResponse(true, `The address is deleted successfully`));
+    response.status(200).json(responseFormatter(true, `The address is deleted successfully`));
 })

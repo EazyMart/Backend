@@ -1,6 +1,6 @@
 const {check} = require("express-validator");
-const APIError = require("../../Helper/APIError");
-const errorValidator = require("../errorValidator");
+const APIError = require("../ErrorHandler/APIError");
+const errorExpressValidatorHandler = require("../ErrorHandler/errorExpressValidatorHandler");
 
 exports.addCouponValidation = [
 	check("code")
@@ -35,7 +35,7 @@ exports.addCouponValidation = [
         //     return true;
         // }),
     
-    errorValidator
+    errorExpressValidatorHandler
 ]
 
 exports.updateCouponValidation = [
@@ -79,5 +79,5 @@ exports.updateCouponValidation = [
         .optional()
         .isBoolean().withMessage("Deleted must be boolean"),
 		
-	errorValidator,
+	errorExpressValidatorHandler,
 ]

@@ -1,4 +1,4 @@
-const APIError = require('../Helper/APIError');
+const APIError = require('../ErrorHandler/APIError');
 const couponModel = require("../Models/couponModel");
 const productModel = require("../Models/productModel");
 

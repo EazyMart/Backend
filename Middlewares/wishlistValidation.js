@@ -1,7 +1,7 @@
 const {check} = require("express-validator");
-const errorValidator = require("../errorValidator");
-const productModel = require("../../Models/productModel");
-const wishlistModel = require("../../Models/wishlistModel");
+const errorExpressValidatorHandler = require("../ErrorHandler/errorExpressValidatorHandler");
+const productModel = require("../Models/productModel");
+const wishlistModel = require("../Models/wishlistModel");
 
 exports.addWishlistValidation = [
 	check("product")
@@ -26,5 +26,5 @@ exports.addWishlistValidation = [
 			return true;
 		}),
 
-	errorValidator
+	errorExpressValidatorHandler
 ]

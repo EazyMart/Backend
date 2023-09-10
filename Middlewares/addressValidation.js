@@ -1,5 +1,5 @@
 const {check} = require("express-validator");
-const errorValidator = require("../errorValidator");
+const errorExpressValidatorHandler = require("../ErrorHandler/errorExpressValidatorHandler");
 
 exports.addAddressValidation = [
 	check("alias")
@@ -34,7 +34,7 @@ exports.addAddressValidation = [
 		.isLength({min: 20}).withMessage("Too short details, 20 characters at least")
 		.isLength({max: 200}).withMessage("Too long details, 200 characters at most"),
 
-    errorValidator
+	errorExpressValidatorHandler
 ]
 
 exports.updateAddressValidation = [
@@ -70,5 +70,5 @@ exports.updateAddressValidation = [
 		.isLength({min: 20}).withMessage("Too short details, 20 characters at least")
 		.isLength({max: 200}).withMessage("Too long details, 200 characters at most"),
 
-    errorValidator
+	errorExpressValidatorHandler
 ]

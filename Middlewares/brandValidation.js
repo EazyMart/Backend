@@ -1,5 +1,5 @@
 const {check} = require("express-validator");
-const errorValidator = require("../errorValidator");
+const errorExpressValidatorHandler = require("../ErrorHandler/errorExpressValidatorHandler");
 
 exports.addBrandValidation = [
 	check("name")
@@ -8,7 +8,7 @@ exports.addBrandValidation = [
 		.isLength({min: 3}).withMessage("Too short Brand name, 3 characters at least")
 		.isLength({max: 32}).withMessage("Too long Brand name, 32 characters at most"),
 		
-    errorValidator
+    errorExpressValidatorHandler
 ]
 
 exports.updateBrandValidation = [
@@ -26,5 +26,5 @@ exports.updateBrandValidation = [
 		.optional()
 		.isBoolean().withMessage("Deleted must be boolean"),
 		
-	errorValidator,
+	errorExpressValidatorHandler,
 ]

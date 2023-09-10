@@ -1,5 +1,5 @@
 const {check} = require("express-validator");
-const errorValidator = require("../errorValidator");
+const errorExpressValidatorHandler = require("../ErrorHandler/errorExpressValidatorHandler");
 
 exports.addCategoryValidation = [
 	check("name")
@@ -8,7 +8,7 @@ exports.addCategoryValidation = [
 		.isLength({min: 3}).withMessage("Too short category name, 3 characters at least")
 		.isLength({max: 32}).withMessage("Too long category name, 32 characters at most"),
 
-    errorValidator
+    errorExpressValidatorHandler
 ]
 
 exports.updateCategoryValidation = [
@@ -26,5 +26,5 @@ exports.updateCategoryValidation = [
 		.optional()
 		.isBoolean().withMessage("Deleted must be boolean"),
 		
-	errorValidator,
+	errorExpressValidatorHandler,
 ]

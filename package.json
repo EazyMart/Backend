@@ -4,7 +4,7 @@
   "description": "EazyMart is an online electronic commerce system",
   "main": "server.js",
   "engines": {
-    "node": "18.x"
+    "node": ">=14 <15"
   },
   "scripts": {
     "start": "node server.js"

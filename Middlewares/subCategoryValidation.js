@@ -1,6 +1,6 @@
 const {check} = require("express-validator");
-const errorValidator = require("../errorValidator")
-const checkCategoryExistence = require("../../Shared/checkCategoryExistence");
+const errorExpressValidatorHandler = require("../ErrorHandler/errorExpressValidatorHandler")
+const checkCategoryExistence = require("../Shared/checkCategoryExistence");
 
 exports.addSubCategoryValidation = [
 	check("name")
@@ -20,7 +20,7 @@ exports.addSubCategoryValidation = [
 			throw new Error(`This category doesn't exist: ${result.notFoundCategories}`);
 		}),
 
-    errorValidator
+    errorExpressValidatorHandler
 ]
 
 exports.updateSubCategoryValidation = [
@@ -49,5 +49,5 @@ exports.updateSubCategoryValidation = [
 		.optional()
 		.isBoolean().withMessage("Deleted must be boolean"),
 		
-	errorValidator,
+	errorExpressValidatorHandler,
 ]
