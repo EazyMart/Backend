@@ -1,5 +1,5 @@
 const productModel = require("../Models/productModel")
-const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./baseController");
+const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./Base/baseController");
 
 // @desc    Get All Products
 // @route   GET /product

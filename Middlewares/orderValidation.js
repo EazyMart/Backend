@@ -1,8 +1,8 @@
 const {check} = require("express-validator");
-const errorValidator = require("../errorValidator");
-const APIError = require("../../Helper/APIError");
-const couponModel = require("../../Models/couponModel");
-const userModel = require("../../Models/userModel");
+const errorExpressValidatorHandler = require("../ErrorHandler/errorExpressValidatorHandler");
+const APIError = require("../ErrorHandler/APIError");
+const couponModel = require("../Models/couponModel");
+const userModel = require("../Models/userModel");
 
 exports.addOrderValidation = [
     check("user")
@@ -50,5 +50,5 @@ exports.addOrderValidation = [
         .toLowerCase()
         .isIn("cash", "online").withMessage("Payment method can only be cash or online"),
 
-    errorValidator
+    errorExpressValidatorHandler
 ]

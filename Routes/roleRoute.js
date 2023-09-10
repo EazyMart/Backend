@@ -2,9 +2,9 @@ const express = require("express");
 
 const router = express.Router();
 const {getAllRoles, getRoleById, addRole, updateRole, deleteRole} = require("../Controllers/roleController");
-const {idValidation} = require("../Middlewares/Validations/idValidation")
-const {addRoleValidation, updateRoleValidation} = require("../Middlewares/Validations/roleValidation")
-const {authontication, authorization} = require("../Middlewares/authoMiddleware");
+const {idValidation} = require("../Middlewares/idValidation")
+const {addRoleValidation, updateRoleValidation} = require("../Middlewares/roleValidation")
+const {authontication, authorization} = require("../Services/authService");
 
 router.route("/")
     .all(authontication, authorization("roles"))

@@ -2,10 +2,10 @@ const express = require("express");
 
 const {addParentIdFromParamToRequestBody, addParentIdFromParamToRequestQuery} = require("../Shared/addToRequestBody");
 const {getAllSubCategories, getSubCategoryById, addSubCategory, updateSubCategory, deleteSubCategory} = require("../Controllers/subCategoryController");
-const {idValidation} = require("../Middlewares/Validations/idValidation")
-const {addSubCategoryValidation, updateSubCategoryValidation} = require("../Middlewares/Validations/subCategoryValidation")
+const {idValidation} = require("../Middlewares/idValidation")
+const {addSubCategoryValidation, updateSubCategoryValidation} = require("../Middlewares/subCategoryValidation")
 const {uploadImageList, toFirebase} = require("../uploadFiles/uploadImage");
-const {authontication, authorization} = require("../Middlewares/authoMiddleware");
+const {authontication, authorization} = require("../Services/authService");
 
 //mergeParams: Allow us to access parameters on the other routers
 const router = express.Router({mergeParams: true});

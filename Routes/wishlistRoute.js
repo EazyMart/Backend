@@ -1,9 +1,9 @@
 const express = require("express");
 const {iSWishlistBelongsToTheCurrentUser, getAllWishlists, addWishlist, deleteWishlist} = require("../Controllers/wishlistController");
-const {idValidation} = require("../Middlewares/Validations/idValidation");
+const {idValidation} = require("../Middlewares/idValidation");
 const {addLoginUserIdToRequestBody, addParentIdFromParamToRequestQuery} = require("../Shared/addToRequestBody");
-const {addWishlistValidation} = require("../Middlewares/Validations/wishlistValidation");
-const {authontication, authorization, allowClientRoleOnly, checkParamIdEqualTokenId} = require("../Middlewares/authoMiddleware");
+const {addWishlistValidation} = require("../Middlewares/wishlistValidation");
+const {authontication, authorization, allowClientRoleOnly, checkParamIdEqualTokenId} = require("../Services/authService");
 
 const router = express.Router({mergeParams: true});
 

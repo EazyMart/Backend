@@ -1,5 +1,5 @@
 const roleModel = require("../Models/roleModel")
-const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./baseController");
+const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./Base/baseController");
 
 // @desc    Get All Roles
 // @route   GET /api/v1/role

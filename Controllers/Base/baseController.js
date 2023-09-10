@@ -1,8 +1,8 @@
 const asyncHandler = require('express-async-handler');
-const APIError = require("../Helper/APIError");
-const CreateResponse = require("../ResponseObject/responseObject");
-const updatedFields = require("../Shared/updatedFields");
-const {filter, select, sort, pagination} = require("../Shared/queryRequest");
+const APIError = require("../../ErrorHandler/APIError");
+const responseFormatter = require("../../ResponseFormatter/responseFormatter");
+const updatedFields = require("../../Shared/updatedFields");
+const {filter, select, sort, pagination} = require("../../Shared/queryRequest");
 
 exports.getAllDocuments = (model, modelName = 'Items', ...searchFields) => 
     asyncHandler(async (request, response) => {
@@ -10,10 +10,10 @@ exports.getAllDocuments = (model, modelName = 'Items', ...searchFields) =>
         const {page, limit, skip, totalPages} = await pagination(request, await model.countDocuments(filtedFields));
         const AllDocuments = await model.find(filtedFields, select(request)).skip(skip).limit(limit).sort(sort(request));
         if(AllDocuments.length > 0) {
-            response.status(200).json(CreateResponse(true, `All ${modelName} are retrieved successfully`, AllDocuments, page, limit, totalPages));
+            response.status(200).json(responseFormatter(true, `All ${modelName} are retrieved successfully`, AllDocuments, page, limit, totalPages));
         }
         else {
-            response.status(200).json(CreateResponse(true, `Empty, No ${modelName} to show`, AllDocuments, page, limit, totalPages));
+            response.status(200).json(responseFormatter(true, `Empty, No ${modelName} to show`, AllDocuments, page, limit, totalPages));
         }
 })
 
@@ -24,13 +24,13 @@ exports.getDocumentById = (model, modelName = 'Item') =>
             next(new APIError(`This ${modelName} is not found`, 404));
             return;
         }
-        response.status(200).json(CreateResponse(true, `The data of this ${modelName} is retrieved successfully`, [document]));
+        response.status(200).json(responseFormatter(true, `The data of this ${modelName} is retrieved successfully`, [document]));
 })
 
 exports.addDocument = (model, modelName = 'Item') => 
     asyncHandler(async (request, response) => {
         const document = await model.create(request.body);
-        response.status(201).json(CreateResponse(true, `The ${modelName} is added successfully`, [document]));
+        response.status(201).json(responseFormatter(true, `The ${modelName} is added successfully`, [document]));
 })
 
 exports.updateDocument = (model, modelName = 'Item', ...feildsThatAllowToUpdate) => 
@@ -43,10 +43,10 @@ exports.updateDocument = (model, modelName = 'Item', ...feildsThatAllowToUpdate)
                 return;
             }
             await updatedDocument.save();
-            response.status(200).json(CreateResponse(true, `This ${modelName} is updated successfully`, [updatedDocument]));
+            response.status(200).json(responseFormatter(true, `This ${modelName} is updated successfully`, [updatedDocument]));
             return;
         }        
-        response.status(200).json(CreateResponse(true, `Nothing is updated`));
+        response.status(200).json(responseFormatter(true, `Nothing is updated`));
 })
 
 exports.softDeleteDocument = (model, modelName = 'Item') =>

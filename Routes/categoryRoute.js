@@ -2,12 +2,12 @@ const express = require("express");
 
 const router = express.Router();
 const {getAllCategories, getCategoryById, addCategory, updateCategory, deleteCategory} = require("../Controllers/categoryController");
-const {idValidation} = require("../Middlewares/Validations/idValidation")
-const {addCategoryValidation, updateCategoryValidation} = require("../Middlewares/Validations/categoryValidation")
+const {idValidation} = require("../Middlewares/idValidation")
+const {addCategoryValidation, updateCategoryValidation} = require("../Middlewares/categoryValidation")
 const subCategoryRoute = require("./subCategoryRoute");
 const productRoute = require("./productRoute");
 const {uploadImageList, toFirebase} = require("../uploadFiles/uploadImage");
-const {authontication, authorization} = require("../Middlewares/authoMiddleware");
+const {authontication, authorization} = require("../Services/authService");
 
 //Redirect to subcategory route
 router.use("/:categoryId/subcategory", subCategoryRoute);

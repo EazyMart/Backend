@@ -1,5 +1,5 @@
 const categoryModel = require("../Models/categoryModel")
-const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./baseController");
+const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./Base/baseController");
 
 // @desc    Create All Categories
 // @route   GET /api/v1/Category

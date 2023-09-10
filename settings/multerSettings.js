@@ -1,5 +1,5 @@
 const multer = require("multer");
-const APIError = require("../Helper/APIError")
+const APIError = require("../ErrorHandler/APIError")
 
 
 const multerFilter = (request, file, cb) => file.mimetype.startsWith("image") ? cb(null, true) : cb(new APIError("Only Images allowed", 400), false);

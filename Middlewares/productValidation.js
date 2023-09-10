@@ -1,8 +1,8 @@
 const {check} = require("express-validator");
-const errorValidator = require("../errorValidator");
-const checkCategoryExistence = require("../../Shared/checkCategoryExistence");
-const checkSubCategoryExistence = require("../../Shared/checkSubcategoryExistence");
-const {addCategoryIdToRequestBody, addSubCategoriesToRequestBody} = require("../../Shared/addToRequestBody");
+const errorExpressValidatorHandler = require("../ErrorHandler/errorExpressValidatorHandler");
+const checkCategoryExistence = require("../Shared/checkCategoryExistence");
+const checkSubCategoryExistence = require("../Shared/checkSubcategoryExistence");
+const {addCategoryIdToRequestBody, addSubCategoriesToRequestBody} = require("../Shared/addToRequestBody");
 
 exports.addProductValidation = [
 	check("title")
@@ -130,7 +130,7 @@ exports.addProductValidation = [
 		.optional()
 		.isInt({min: 1}).withMessage("Brand Id must be an integer more than or equal to 1"),
 	
-	errorValidator
+	errorExpressValidatorHandler
 ]
 
 exports.updateProductValidation = [
@@ -277,5 +277,5 @@ exports.updateProductValidation = [
 		.optional()
 		.isInt({min: 1}).withMessage("Brand Id must be an integer more than or equal to 1"),
 	
-	errorValidator
+	errorExpressValidatorHandler
 ]

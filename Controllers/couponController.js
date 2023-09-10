@@ -1,5 +1,5 @@
 const couponModel = require("../Models/couponModel")
-const {getAllDocuments, getDocumentById, addDocument, updateDocument, hardDeleteDocument} = require("./baseController");
+const {getAllDocuments, getDocumentById, addDocument, updateDocument, hardDeleteDocument} = require("./Base/baseController");
 
 // @desc    Get All Coupons
 // @route   GET /api/v1/coupon

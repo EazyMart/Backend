@@ -2,9 +2,9 @@ const express = require("express");
 
 const router = express.Router();
 const {getAllCoupons, getCouponById, addCoupon, updateCoupon, deleteCoupon} = require("../Controllers/couponController");
-const {idValidation} = require("../Middlewares/Validations/idValidation")
-const {addCouponValidation, updateCouponValidation} = require("../Middlewares/Validations/couponValidation")
-const {authontication, authorization} = require("../Middlewares/authoMiddleware");
+const {idValidation} = require("../Middlewares/idValidation")
+const {addCouponValidation, updateCouponValidation} = require("../Middlewares/couponValidation")
+const {authontication, authorization} = require("../Services/authService");
 
 router.route("/")
     .all(authontication, authorization("coupons"))

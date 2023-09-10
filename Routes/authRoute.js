@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 const {signup, login, forgetPassword, verifyResetPasswordCode, resetPassword} = require("../Controllers/authController");
 const {addClientRole} = require("../Shared/addClientRole");
-const {signupValidation, loginValidation, forgetPasswordValidation, verifyResetPasswordCodeValidation, resetPasswordValidation} = require("../Middlewares/Validations/authValidation");
+const {signupValidation, loginValidation, forgetPasswordValidation, verifyResetPasswordCodeValidation, resetPasswordValidation} = require("../Middlewares/authValidation");
 
 router.route("/signup")
     .post(addClientRole, signupValidation, signup)

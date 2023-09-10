@@ -1,5 +1,5 @@
 const {check} = require("express-validator");
-const errorValidator = require("../errorValidator");
+const errorExpressValidatorHandler = require("../ErrorHandler/errorExpressValidatorHandler");
 
 const validModels = ['categories', 'subcategories', 'brands', 'products', 'roles', 'wishlists', 'coupons', 'orders', 'reviews', 'users'];
 const validPermissions = ['get', 'post', 'patch', 'put', 'delete'];
@@ -33,7 +33,7 @@ exports.addRoleValidation = [
             return true
         }),
 
-    errorValidator
+    errorExpressValidatorHandler
 ]
 
 exports.updateRoleValidation = [
@@ -74,5 +74,5 @@ exports.updateRoleValidation = [
         .optional()
         .isBoolean().withMessage("Deleted must be boolean"),
 		
-	errorValidator,
+	errorExpressValidatorHandler,
 ]
