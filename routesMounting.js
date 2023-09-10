@@ -1,3 +1,4 @@
+const express = require('express');
 const categoryRoute = require("./Routes/categoryRoute");
 const subCategoryRoute = require("./Routes/subCategoryRoute");
 const brandRoute = require("./Routes/brandRoute");
@@ -8,19 +9,21 @@ const couponRoute = require("./Routes/couponRoute");
 const userRoute = require("./Routes/userRoute");
 const authRoute = require("./Routes/authRoute");
 const orderRoute = require("./Routes/orderRoute");
+const webhookRoute = require("./Routes/webhookRoute");
 
-
-const mountRoutes = (app, apiVersion) => {
-    app.use(`${apiVersion}/auth`, authRoute);
-    app.use(`${apiVersion}/user`, userRoute);
-    app.use(`${apiVersion}/category`, categoryRoute);
-    app.use(`${apiVersion}/subcategory`, subCategoryRoute);
-    app.use(`${apiVersion}/brand`, brandRoute);
-    app.use(`${apiVersion}/product`, productRoute);
-    app.use(`${apiVersion}/role`, roleRoute);
-    app.use(`${apiVersion}/review`, reviewRoute);
-    app.use(`${apiVersion}/coupon`, couponRoute);
-    app.use(`${apiVersion}/order`, orderRoute);
+const mountRoutes = (app) => {
+    app.use(`${process.env.apiVersion}/webhook`, express.raw({type: 'application/json'}), webhookRoute);
+    app.use(express.json());
+    app.use(`${process.env.apiVersion}/auth`, authRoute);
+    app.use(`${process.env.apiVersion}/user`, userRoute);
+    app.use(`${process.env.apiVersion}/category`, categoryRoute);
+    app.use(`${process.env.apiVersion}/subcategory`, subCategoryRoute);
+    app.use(`${process.env.apiVersion}/brand`, brandRoute);
+    app.use(`${process.env.apiVersion}/product`, productRoute);
+    app.use(`${process.env.apiVersion}/role`, roleRoute);
+    app.use(`${process.env.apiVersion}/review`, reviewRoute);
+    app.use(`${process.env.apiVersion}/coupon`, couponRoute);
+    app.use(`${process.env.apiVersion}/order`, orderRoute);
 }
 
 module.exports = mountRoutes;

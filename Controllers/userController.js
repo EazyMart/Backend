@@ -6,29 +6,29 @@ const userModel = require("../Models/userModel");
 const {getAllDocuments, getDocumentById, addDocument, updateDocument, softDeleteDocument} = require("./Base/baseController");
 
 // @desc    Get All users
-// @route   GET /api/v1/user
+// @route   GET /user
 // @access  Public
 const searchFields = ["firstName", "lastName", "email", "mobilePhone", "role"];
 exports.getAllUsers = getAllDocuments(userModel, 'Users', ...searchFields);
 
 // @desc    Get User by ID
-// @route   GET /api/v1/user/:id
+// @route   GET /user/:id
 // @access  Public
 exports.getUserById = getDocumentById(userModel, 'User');
 
 // @desc    Signup
-// @route   POST /api/v1/User
+// @route   POST /User
 // @access  Public
 exports.addUser = addDocument(userModel, 'User');
 
 // @desc    Update User
-// @route   PATCH /api/v1/user/:id
+// @route   PATCH /user/:id
 // @access  Private
 const feildsThatAllowToUpdate = ["firstName", "lastName", "profileImage", "mobilePhone", "available"];
 exports.updateUser = updateDocument(userModel, 'User', ...feildsThatAllowToUpdate);
 
 // @desc    Update User
-// @route   PATCH /api/v1/user/:id/role
+// @route   PATCH /user/:id/role
 // @access  Private
 exports.updateUserRole = updateDocument(userModel, 'User', "role");
 

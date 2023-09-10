@@ -1,18 +1,11 @@
-const compression = require('express-compression')
 const express = require("express");
-require("dotenv").config({path: "config.env"});
+const compression = require('express-compression')
 const cors = require("cors");
 const dbConnection = require("./Config/database")
 const logger = require("./logger");
-const globalErrorHandler = require("./ErrorHandler/globalErrorHandler")
 const routesMounting = require("./routesMounting");
+const globalErrorHandler = require("./ErrorHandler/globalErrorHandler")
 const notFoundRoutesHandler = require("./ErrorHandler/notFoundRoutesHandler")
-
-if (!String.prototype.replaceAll) {
-    String.prototype.replaceAll = function (search, replacement) {
-        return this.split(search).join(replacement);
-    };
-};
 
 const app = express();
 const port = process.env.Port || 8000;
@@ -26,12 +19,10 @@ dbConnection().then(() => {
 
 app.use(cors())
 app.options('*', cors());
-app.use(compression());
-app.use(express.json());
-
 app.use(logger());
+app.use(compression());
 
-routesMounting(app, process.env.apiVersion);
+routesMounting(app);
 
 app.all('*', notFoundRoutesHandler);
 

@@ -16,22 +16,22 @@ const searchFields = ['comment', 'rating', 'product', 'user'];
 exports.getAllReviews = getAllDocuments(reviewModel, 'Reviews', ...searchFields);
 
 // @desc    Get Review by ID
-// @route   GET /api/v1/Review/:id
+// @route   GET /review/:id
 // @access  Public
 exports.getReviewById = getDocumentById(reviewModel, 'Review');
 
 // @desc    Create Review
-// @route   POST /api/v1/Review
+// @route   POST /review
 // @access  Private
 exports.addReview = addDocument(reviewModel, 'Review');
 
 // @desc    Update Review
-// @route   PATCH /api/v1/Review/:id
+// @route   PATCH /review/:id
 // @access  Private
 const feildsThatAllowToUpdate = ['comment', 'rating', 'available', 'deleted']; //No update for user id or product id
 exports.updateReview = updateDocument(reviewModel, 'Review', ...feildsThatAllowToUpdate);
 
 // @desc    Delete Review
-// @route   DELETE /api/v1/Review/:id
+// @route   DELETE /review/:id
 // @access  Private
 exports.deleteReview = hardDeleteDocument(reviewModel, 'Review');
