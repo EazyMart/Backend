@@ -19,8 +19,8 @@ dbConnection().then(() => {
 
 app.use(cors())
 app.options('*', cors());
-app.use(logger());
 app.use(compression());
+app.use(logger());
 
 routesMounting(app);
 

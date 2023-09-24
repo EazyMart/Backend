@@ -1,6 +1,7 @@
 const APIError = require('../ErrorHandler/APIError');
 const couponModel = require("../Models/couponModel");
 const productModel = require("../Models/productModel");
+const orderModel = require("../Models/orderModel");
 
 const checkProductFound = async (request, session, next) => {
     const uniqueOrderItemsProducts = Array.from(new Set(request.body.orderItems.map((orderItem) => orderItem.product)));
@@ -34,14 +35,14 @@ const checkProductColors = (request, dbProducts, next) => {
 }
 
 const calculateTotalQuantityForRepeatedProducts = (request) => {
-    const productQuantities = request.body.orderItems.map((orderItem) => ({_id: orderItem.product, quantity: orderItem.quantity}));
+    const productQuantities = request.body.orderItems.map((orderItem) => ({product: orderItem.product, quantity: orderItem.quantity, color: orderItem.color}));
     const findalProductQuantities = productQuantities.reduce((result, current) => {
-        const existingItem = result.find(item => item._id === current._id);
+        const existingItem = result.find(item => item.product === current.product);
         if (existingItem) {
             existingItem.quantity += current.quantity;
         } 
         else {
-            result.push({ _id: current._id, quantity: current.quantity});
+            result.push({ product: current.product, quantity: current.quantity, color: current.color});
         }
         return result;
     }, []);
@@ -51,9 +52,9 @@ const calculateTotalQuantityForRepeatedProducts = (request) => {
 const checkProductQuantity = (request, dbProducts, next) => {
     const findalProductQuantities = calculateTotalQuantityForRepeatedProducts(request);
     for(const product of findalProductQuantities) {
-        const matchedProduct = dbProducts.find((item) => item._id === product._id);
+        const matchedProduct = dbProducts.find((item) => item._id === product.product);
         if(matchedProduct.quantity === 0) {
-            next(new APIError(`This product is out of stock: ${product._id}`, 409));
+            next(new APIError(`This product is out of stock: ${product.product}`, 409));
         }
         if(matchedProduct.quantity - product.quantity < 0) {
             next(new APIError(`There ${matchedProduct.quantity === 1 ? 'is only one item' : `are only ${matchedProduct.quantity} items`} available from this product: ${matchedProduct._id} in the stock`, 409));
@@ -65,7 +66,7 @@ const checkProductQuantity = (request, dbProducts, next) => {
 const calculateTotalOrderPrice = async (request, dbProducts, findalProductQuantities) => {
     let totalPrice = 0;
     for(const product of findalProductQuantities) {
-        const matchedProduct = dbProducts.find((item) => item._id === product._id);
+        const matchedProduct = dbProducts.find((item) => item._id === product.product);
         totalPrice += (matchedProduct.price - (matchedProduct.price * matchedProduct.discount)) * product.quantity;
     }
     return totalPrice;
@@ -88,16 +89,27 @@ const checkCouponFound = async(request, session, next) => {
 const updateProductInformation = async (request, dbProducts, findalProductQuantities, session) => {
     const bulkOption = findalProductQuantities.map((item) => ({
         updateOne: {
-            filter: { _id: item._id, quantity: { $gte: item.quantity}},
+            filter: { _id: item.product, quantity: { $gte: item.quantity}},
             update: { $inc: {quantity: -item.quantity, sold: +item.quantity} },
         }
     }));
-    // await (async () => {
-    //     for(let i = 0; i < 100000000000; i++) {
-    //         // console.log
-    //     }
-    // })();
     await productModel.bulkWrite(bulkOption, {session});
 }
 
-module.exports = {checkProductFound, checkProductColors, checkProductQuantity, calculateTotalOrderPrice, checkCouponFound, updateProductInformation}
+const deleteIncompletedOrder = (orderId) => {
+    setTimeout(async () => {        
+        const tempOrder = await orderModel.findById(orderId);
+        if(!tempOrder.isPaid) {
+            await orderModel.findOneAndDelete({_id: orderId});
+            const bulkOption = tempOrder.orderItems.map((item) => ({
+                updateOne: {
+                    filter: { _id: item.product},
+                    update: { $inc: {quantity: +item.quantity, sold: -item.quantity} },
+                }
+            }));
+            await productModel.bulkWrite(bulkOption);
+        }
+    }, 1000 * 60 * 10); // 10 minutes
+}
+
+module.exports = {checkProductFound, checkProductColors, checkProductQuantity, calculateTotalOrderPrice, checkCouponFound, updateProductInformation, deleteIncompletedOrder}

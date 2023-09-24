@@ -5,7 +5,7 @@ const APIError = require('../ErrorHandler/APIError');
 const responseFormatter = require("../ResponseFormatter/responseFormatter");
 const orderModel = require("../Models/orderModel");
 const {getAllDocuments, updateDocument} = require("./Base/baseController");
-const {checkProductFound, checkProductColors, checkProductQuantity, calculateTotalOrderPrice, checkCouponFound, updateProductInformation} = require("../Shared/orderCheckMethods");
+const {checkProductFound, checkProductColors, checkProductQuantity, calculateTotalOrderPrice, checkCouponFound, updateProductInformation, deleteIncompletedOrder} = require("../Shared/orderCheckMethods");
 const updatedFields = require("../Shared/updatedFields");
 
 // @desc    Add UserId To Request Query when the logged user has client role
@@ -34,6 +34,7 @@ const creatOrder = async (request, response, next) => {
             request.body.totalOrderPrice = await calculateTotalOrderPrice(request, dbProducts, findalProductQuantities, session, next);
             request.body.discountPercentage = await checkCouponFound(request, session, next);
             request.body.shippingAddress = request.shippingAddress;
+            request.body.orderItems = findalProductQuantities;
             const order = new orderModel(request.body);
             await order.save({session});
             await updateProductInformation(request, dbProducts, findalProductQuantities, session);
@@ -88,6 +89,7 @@ exports.addOrder = asyncHandler(async (request, response, next) => {
                     tempOrderId: order._id
                 }
             });
+            deleteIncompletedOrder(order._id);
             response.status(201).send(responseFormatter(true, "Th client secret key is generated successfully", [{clientSecret: paymentIntent.client_secret}]));
         }
     }

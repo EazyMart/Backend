@@ -32,17 +32,6 @@ exports.signupValidation = [
 	check("mobilePhone")
 		.optional()
 		.isMobilePhone("any").withMessage("Invalid Mobile Phone"),
-		
-	check("role")
-		.notEmpty().withMessage("Any user must have a role")
-		.isInt().withMessage("Invalid Role")
-		.custom((value) => {
-			const role = roleModel.findById(value, {_id: 1});
-			if(role) {
-				return true;
-			}
-			throw new Error(`This role doesn't exist`);
-		}),
 
 	errorExpressValidatorHandler
 ]

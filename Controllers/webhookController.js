@@ -28,3 +28,7 @@ exports.confirmPayment = asyncHandler(async (request, response) => {
     }
     response.status(200).send(responseFormatter(true, "The order is confirmed successfully", [order]));
 });
+
+exports.cancelOrder = asyncHandler(async (request, response) =>{
+    console.log(`Cancelling order`);
+})
