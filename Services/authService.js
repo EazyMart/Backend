@@ -1,5 +1,4 @@
 const asyncHandler = require("express-async-handler");
-require("dotenv").config({path: "config.env"});
 const JWT = require("jsonwebtoken");
 const APIError = require("../ErrorHandler/APIError");
 const userModel = require("../Models/userModel")

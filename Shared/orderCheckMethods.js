@@ -96,7 +96,7 @@ const updateProductInformation = async (request, dbProducts, findalProductQuanti
     await productModel.bulkWrite(bulkOption, {session});
 }
 
-const deleteIncompletedOrder = (orderId) => {
+const deleteInCompletedOrder = (orderId) => {
     setTimeout(async () => {        
         const tempOrder = await orderModel.findById(orderId);
         if(!tempOrder.isPaid) {
@@ -112,4 +112,4 @@ const deleteIncompletedOrder = (orderId) => {
     }, 1000 * 60 * 10); // 10 minutes
 }
 
-module.exports = {checkProductFound, checkProductColors, checkProductQuantity, calculateTotalOrderPrice, checkCouponFound, updateProductInformation, deleteIncompletedOrder}
+module.exports = {checkProductFound, checkProductColors, checkProductQuantity, calculateTotalOrderPrice, checkCouponFound, updateProductInformation, deleteInCompletedOrder}

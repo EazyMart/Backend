@@ -1,6 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const nodemailer = require('nodemailer');
-require("dotenv").config({path: "config.env"});
 const asyncHandler = require("express-async-handler");
 
 exports.sendEmail = asyncHandler(async (options) => {
