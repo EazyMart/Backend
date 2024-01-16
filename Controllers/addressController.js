@@ -5,7 +5,7 @@ const APIError = require("../ErrorHandler/APIError");
 const userModel = require("../Models/userModel");
 
 // @desc    Get All User Addresses
-// @route   GET /api/v1/user/:userId/addresses
+// @route   GET /user/:userId/addresses
 // @access  Private
 exports.getAllUserAddressByUserId = asyncHandler(async (request, response, next) => {
     const user = await userModel.findById({_id: request.params.userId}, {addresses: 1});
@@ -17,7 +17,7 @@ exports.getAllUserAddressByUserId = asyncHandler(async (request, response, next)
 })
 
 // @desc    Get specific Address for User by ID
-// @route   GET /api/v1/user/:id
+// @route   GET /user/:id
 // @access  Public
 exports.getUserAddressById = asyncHandler(async (request, response, next) => {
     const user = await userModel.findById({_id: request.params.userId}, {addresses: 1});
@@ -30,7 +30,7 @@ exports.getUserAddressById = asyncHandler(async (request, response, next) => {
 })
 
 // @desc    Add Address for specific user
-// @route   POST /api/v1/User/:userId/address
+// @route   POST /User/:userId/address
 // @access  Private
 exports.addUserAddress = asyncHandler(async (request, response, next) => {
     const user = await userModel.findById(request.params.userId, {addresses: 1});
@@ -57,7 +57,7 @@ exports.addUserAddress = asyncHandler(async (request, response, next) => {
 })
 
 // @desc    Update Specific Address For Specific User
-// @route   PATCH /api/v1/user/:userId/address/id
+// @route   PATCH /user/:userId/address/id
 // @access  Private
 exports.updateUserAddress = asyncHandler(async (request, response, next) => {
     const user = await userModel.findById(request.params.userId, {addresses: 1});
@@ -84,7 +84,7 @@ exports.updateUserAddress = asyncHandler(async (request, response, next) => {
 })
 
 // @desc    Delete Specific Address For Specific User
-// @route   DELETE /api/v1/user/:userId/address/id
+// @route   DELETE /user/:userId/address/id
 // @access  Private
 exports.deleteUserAddress = asyncHandler(async (request, response, next) => {
     const user = await userModel.findById({_id: request.params.userId}, {addresses: 1});

@@ -1,5 +1,4 @@
 const asyncHandler = require("express-async-handler");
-require("dotenv").config({path: "config.env"});
 const JWT = require("jsonwebtoken");
 const APIError = require("../ErrorHandler/APIError");
 const userModel = require("../Models/userModel")
@@ -7,18 +6,22 @@ const userModel = require("../Models/userModel")
 const authontication = asyncHandler(async (request, response, next) => { 
     if(request.headers.authorization && request.headers.authorization.startsWith("Bearer")) {
         const token = request.headers.authorization.split(" ")[1];
-        const decodedPayload = JWT.verify(token, process.env.Secret_Key);
-        const user = await userModel.findById(decodedPayload.id, {role: 1, passwordUpdatedTime: 1});
-        if(user && user.role.name === decodedPayload.role.name) {
-            if(user.passwordUpdatedTime) {
-                const passwordUpdatedTimeInSeconds = parseInt(user.passwordUpdatedTime.getTime() / 1000, 10);
-                if(passwordUpdatedTimeInSeconds > decodedPayload.iat) {
-                    throw new APIError("Unathorized, try to login again", 401);
+        try {
+            const decodedPayload = JWT.verify(token, process.env.Secret_Key);
+            const user = await userModel.findById(decodedPayload.id, {role: 1, passwordUpdatedTime: 1});
+            if(user && user.role.name === decodedPayload.role.name) {
+                if(user.passwordUpdatedTime) {
+                    const passwordUpdatedTimeInSeconds = parseInt(user.passwordUpdatedTime.getTime() / 1000, 10);
+                    if(passwordUpdatedTimeInSeconds > decodedPayload.iat) {
+                        throw new APIError("Unathorized, try to login again", 401);
+                    }
                 }
+                request.user = decodedPayload;
+                next();
+                return;
             }
-            request.user = decodedPayload;
-            next();
-            return;
+        }catch(error) {
+            throw new APIError(error.message, 401);
         }
     }
     throw new APIError("Unathorized, try to login again", 401);

@@ -5,7 +5,7 @@ const APIError = require('../ErrorHandler/APIError');
 const responseFormatter = require("../ResponseFormatter/responseFormatter");
 const orderModel = require("../Models/orderModel");
 const {getAllDocuments, updateDocument} = require("./Base/baseController");
-const {checkProductFound, checkProductColors, checkProductQuantity, calculateTotalOrderPrice, checkCouponFound, updateProductInformation} = require("../Shared/orderCheckMethods");
+const {checkProductFound, checkProductColors, checkProductQuantity, calculateTotalOrderPrice, checkCouponFound, updateProductInformation, deleteInCompletedOrder} = require("../Shared/orderCheckMethods");
 const updatedFields = require("../Shared/updatedFields");
 
 // @desc    Add UserId To Request Query when the logged user has client role
@@ -34,6 +34,7 @@ const creatOrder = async (request, response, next) => {
             request.body.totalOrderPrice = await calculateTotalOrderPrice(request, dbProducts, findalProductQuantities, session, next);
             request.body.discountPercentage = await checkCouponFound(request, session, next);
             request.body.shippingAddress = request.shippingAddress;
+            request.body.orderItems = findalProductQuantities;
             const order = new orderModel(request.body);
             await order.save({session});
             await updateProductInformation(request, dbProducts, findalProductQuantities, session);
@@ -63,48 +64,46 @@ const creatOrder = async (request, response, next) => {
 }
 
 // @desc    Get All Orders
-// @route   GET /api/v1/user/order
+// @route   GET /user/order
 // @access  Private
 const searchFields = ['user', 'mobilePhone', 'totalOrderPrice', 'copoun', 'shippingPrice', 'paymentMethodType', 'isPaid', 'orderStatus', 'available', 'deleted'];
 exports.getAllOrders = getAllDocuments(orderModel, 'Orders', ...searchFields);
 
 // @desc    Create Order
-// @route   POST /api/v1/order
+// @route   POST /order
 // @access  Private
 exports.addOrder = asyncHandler(async (request, response, next) => {
     const order = await creatOrder(request, response, next);
     if(order) {
-        response.status(201).send(responseFormatter(true, "The order is created successfully", [order]));
-    }
-});
-
-// @desc    Create Order
-// @route   POST /api/v1/order/online
-// @access  Private
-exports.addOrderOnline = asyncHandler(async (request, response, next) => {
-    const order = await creatOrder(request, response, next);
-    if(order) {
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount: (order.totalOrderPrice - (order.totalOrderPrice * order.discountPercentage)) * 100,
-            currency: "usd",
-            automatic_payment_methods: {
-                enabled: true,
-            }
-        });
-        response.status(201).send(responseFormatter(true, "Th client secret key is generated successfully", [{clientSecret: paymentIntent.client_secret, tempOrderId: order._id}]));
+        if(order.paymentMethodType === 'cash') {
+            response.status(201).send(responseFormatter(true, "The order is created successfully", [order]));
+        }
+        else {
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount: (order.totalOrderPrice - (order.totalOrderPrice * order.discountPercentage)) * 100,
+                currency: "usd",
+                automatic_payment_methods: {
+                    enabled: true,
+                },
+                metadata: {
+                    tempOrderId: order._id
+                }
+            });
+            deleteInCompletedOrder(order._id);
+            response.status(201).send(responseFormatter(true, "Th client secret key is generated successfully", [{clientSecret: paymentIntent.client_secret}]));
+        }
     }
 });
 
 // @desc    Create Order by Admin
-// @route   POST /api/v1/order
+// @route   POST /order
 // @access  Private
 const feildsThatAllowToUpdate = ["isPaid", "paidAt", "orderStatus", "deliveredAt", "available", "deleted"];
 exports.updateOrderByAdmin = updateDocument(orderModel, 'Order', ...feildsThatAllowToUpdate);
 
 // @desc    Create Order by Admin
-// @route   POST /api/v1/order
+// @route   POST /order
 // @access  Private
-
 // const feildsThatAllowToUpdate = ['orderItems', 'shippingAddress', 'mobilePhone'];
 exports.updateOrderByClient = asyncHandler(async (request, response, next) => {
     let order = await orderModel.findById(request.params.id);
@@ -136,25 +135,3 @@ exports.updateOrderByClient = asyncHandler(async (request, response, next) => {
     }
 })
 
-// @desc    Confirm order payment by stripe webhook
-// @route   POST /api/v1/order/confirm
-// @access  Private
-exports.confirmPayment = asyncHandler(async (request, response) => {
-    const sig = request.headers['stripe-signature'];
-        let event;
-        try {
-            event = stripe.webhooks.constructEvent(request.body, sig, process.env.endpointSecret);
-        } 
-        catch (err) {
-            throw new APIError(err.message, 400);
-        }
-        switch (event.type) {
-            case 'checkout.session.completed':
-                const checkoutSessionCompleted = event.data.object;
-                console.log(checkoutSessionCompleted);
-                break;
-            default:
-                throw new APIError(`Unhandled event type ${event.type}`, 500);
-        }
-        response.status(200).send({status: 'success'});
-});

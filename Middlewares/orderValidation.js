@@ -45,10 +45,9 @@ exports.addOrderValidation = [
         }),
 
     check("paymentMethodType")
-        .optional()
         .trim()
         .toLowerCase()
-        .isIn("cash", "online").withMessage("Payment method can only be cash or online"),
+        .isIn(["online", "cash"]).withMessage("Payment method can only be cash or online"),
 
     errorExpressValidatorHandler
 ]

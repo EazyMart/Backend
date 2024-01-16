@@ -15,17 +15,17 @@ exports.iSWishlistBelongsToTheCurrentUser = asyncHandler(async (request, respons
 });
 
 // @desc    Get All Wishlists
-// @route   GET /api/v1/user/:userId/wishlist
+// @route   GET /user/:userId/wishlist
 // @access  Private
 const searchFields = ['product', 'user'];
 exports.getAllWishlists = getAllDocuments(wishlistModel, 'Wishlists', ...searchFields);
 
 // @desc    Create Wishlist
-// @route   POST /api/v1/user/:userId/wishlist
+// @route   POST /user/:userId/wishlist
 // @access  Private
 exports.addWishlist = addDocument(wishlistModel, 'Wishlist');
 
 // @desc    Delete Wishlist
-// @route   DELETE /api/v1/user/:userId/wishlist/:id
+// @route   DELETE /user/:userId/wishlist/:id
 // @access  Private
 exports.deleteWishlist = hardDeleteDocument(wishlistModel, 'Wishlist');
