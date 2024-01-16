@@ -1,5 +1,5 @@
 access.log
-config.env
+.env
 uploads/
 node_modules/
 node_modules/.package-lock.json
